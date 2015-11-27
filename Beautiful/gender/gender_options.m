@@ -10,7 +10,8 @@ function options = gender_options(options)
     
     [~, name] = system('hostname');
     options.result_path   = [options.home '/results/Gender'];
-    options.sound_path = [options.home '/ownCloud/NVA/Dutch_equalized'];
+%     options.sound_path = [options.home '/ownCloud/NVA/Dutch_equalized'];
+    options.sound_path = [options.home '/sounds/NVA/Dutch_equalized'];
     if options.Bert
         options.tmp_path   = [options.home '/sounds/NVA/gender/processed/Bert'];
     else

@@ -32,11 +32,11 @@ function [G, bkg, bigFish, bubbles, gameCommands, hourglass] = setUpGame(maxTurn
     addprop(bigFish, 'availableLocArc1');
 %     bigFish.availableLocArc1 = randperm(nFriends);
     bigFish.availableLocArc1 = nFriends : -1 : 1; % ordinatelly set friends from left to right
-    locFriendsArcOne =  SpriteKit.Sprite('circle');
+%     locFriendsArcOne =  SpriteKit.Sprite('circle');
     % there must be as many sprites of the circles as many circles we want
-    locFriendsArcOne.initState('circle', '../img/fixed/circle.png', true);
-    locFriendsArcOne.Location = round([x;y]);
-    locFriendsArcOne.Scale = targetScale; % this is to make sure that the circle and the friends on the first arc have equal dimensions
+%     locFriendsArcOne.initState('circle', '../img/fixed/circle.png', true);
+%     locFriendsArcOne.Location = round([x;y]);
+%     locFriendsArcOne.Scale = targetScale; % this is to make sure that the circle and the friends on the first arc have equal dimensions
 %% second arc
     nFriends = friendsTypes;
     [x, y] = getArc(0, pi, bigFish.Location(1), bigFish.Location(2), 350, nFriends);
