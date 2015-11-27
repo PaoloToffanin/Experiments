@@ -1,0 +1,24 @@
+ 
+convert -size 100x60 xc:skyblue -fill white -stroke black \
+          -draw "circle 50,30 40,10" \
+          -background white -alpha Background bubbles.png
+          
+convert -size 100x160 xc:none -fill skyblue -stroke white -strokewidth 5 \
+	  -draw "circle 50,30 40,10" \
+	  -draw "circle 30,10 40,10" \
+	  -background none -alpha Background bubbles.png
+          
+convert -size 100x160 xc:none \
+	  -draw "fill skyblue stroke white stroke-width 5 circle 50,30 40,10" \
+	  -draw "fill red stroke white stroke-width 5 circle 30,10 40,10" \
+	  -background none -alpha Background bubbles.png
+
+convert -size 100x160 xc:none \
+	  -draw "fill rgb(255,255,0,50%) stroke white stroke-width 5 circle 50,30 40,10" \
+	  -draw "fill red stroke white stroke-width 5 circle 10,80 40,20" \
+	  -background none -alpha Background bubbles.png	  
+	  
+convert -size 100x100 xc: \
+            -draw 'fill none stroke black stroke-linecap round
+                stroke-width 40    line 50,40 50,40.0001' \
+         x:	  
