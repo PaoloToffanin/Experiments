@@ -15,14 +15,10 @@ if strcmp(button, 'no')
 end
 
 
-exp = struct('dir', {'NVA', 'emotion', 'fishy', 'gender'}, ... 
-    'name', {'NVA_run.m', 'emotion_run.m', 'fishy_run.m', 'gender_run.m'});
-
-exp = struct('dir', {'gender'}, ... 
-    'name', {'gender_run.m'});
-
-% exp = struct('dir', {'NVA'}, ... 
-%     'name', {'NVA_run.m'});
+% exp = struct('dir', {'NVA', 'emotion', 'fishy', 'gender'}, ... 
+%     'name', {'NVA_run.m', 'emotion_run.m', 'fishy_run.m', 'gender_run.m'});
+exp = struct('dir', {'fishy','emotion', 'gender'}, ... 
+    'name', {'fishy_run.m', 'emotion_run.m', 'gender_run.m'});
 
 
 % randomize = randperm(length(exp));

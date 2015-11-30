@@ -11,7 +11,7 @@ function emotion_run%(subject)
     cue = cue(randperm(length(cue)));
     
     if strcmp(options.subject_name, 'test')
-        for attempts = 1 : 1
+%         for attempts = 1 : 1
             cue = cue(randperm(length(cue)));
             for icue = 1 : length(cue);
                 phase = {'training', 'test'};
@@ -20,7 +20,7 @@ function emotion_run%(subject)
                     emotion_main(options.subject_name, phase{iphase}, cue{icue});
                 end
             end
-        end
+%         end
     else
         for icue = 1 : length(cue);
             phase = {'training', 'test'};
@@ -33,3 +33,9 @@ function emotion_run%(subject)
 end
 
 % load /home/paolot/results/Emotion/emo_name.mat
+
+%       run('../participantDetails.m')
+%       emotion_main(options.subject_name, 'training', 'intact');
+%       emotion_main(options.subject_name, 'training', 'normalized');
+%       emotion_main(options.subject_name, 'test', 'intact');
+%       emotion_main(options.subject_name, 'test', 'normalized');

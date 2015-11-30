@@ -37,7 +37,15 @@ function [G, Clown, Buttonup, Buttondown, gameCommands, Confetti, Parrot, ...
     %ratioscreenclown = 0.25 * screen2(4);
     %[HeightClown, ~] = size(imread ('Images/clownfish_1.png'));
     %Clown.Scale = ratioscreenclown/HeightClown;
-    
+    clickArea = size(imread('Images/clownSpotLight_1.png'));
+    addprop(Clown, 'clickL');
+    addprop(Clown, 'clickR');
+    addprop(Clown, 'clickD');
+    addprop(Clown, 'clickU');
+    Clown.clickL = round(Clown.Location(1) - round(clickArea(1)/2));
+    Clown.clickR = round(Clown.Location(1) + round(clickArea(1)/2));
+    Clown.clickD = round(Clown.Location(2) - round(clickArea(2)/4));
+    Clown.clickU = round(Clown.Location(2) + round(clickArea(2)/4));
 %       Parrot 
     Parrot = SpriteKit.Sprite ('parrot');
     Parrot.initState('neutral', ['Images/' 'parrot_neutral' '.png'], true);
@@ -56,6 +64,16 @@ function [G, Clown, Buttonup, Buttondown, gameCommands, Confetti, Parrot, ...
     Parrot.Location = [screen2(3)/2.2, screen2(4)/1.8];
     Parrot.State = 'off'; 
     Parrot.Depth = 2;
+    clickArea = size(imread('Images/parrot_1.png'));
+    addprop(Parrot, 'clickL');
+    addprop(Parrot, 'clickR');
+    addprop(Parrot, 'clickD');
+    addprop(Parrot, 'clickU');
+    Parrot.clickL = round(Parrot.Location(1) - round(clickArea(1)/2));
+    Parrot.clickR = round(Parrot.Location(1) + round(clickArea(1)/2));
+    Parrot.clickD = round(Parrot.Location(2) - round(clickArea(2)/4));
+    Parrot.clickU = round(Parrot.Location(2) + round(clickArea(2)/4));
+
 %       Buttons 
     Buttonup = SpriteKit.Sprite ('buttonup'); 
     Buttonup.initState ('on','Images/button_right.png', true);

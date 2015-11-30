@@ -4,6 +4,7 @@ function emotion_main(varargin)
     options.subject_name = varargin{1};
     phase = varargin{2};
     cue = varargin{3};
+    simulateSubj = false;
     if strcmp(options.subject_name, 'test')
         simulateSubj = true;
     end
@@ -101,7 +102,6 @@ function emotion_main(varargin)
         
         if isempty(emotionvoices(indexes)) % extend structure with missing files and redo selection
             nLeft = length(emotionvoices);
-%           tmp = emotionvoices(strcmp({emotionvoices.phase}, phase));
             tmp = classifyFiles(options.soundDir, phase);
             emotionvoices(nLeft + 1 : nLeft + length(tmp)) = tmp;
             clear tmp
@@ -127,10 +127,7 @@ function emotion_main(varargin)
                 break;
             end
         end
-        tic(); % We are taking the RT from after the sound, but then there 
-        % are a few waits below in which J is talking to the kids before 
-        % they give an answer
-        
+        tic(); 
         if simulateSubj
             response.timestamp = now;
             response.response_time = toc;
@@ -140,56 +137,68 @@ function emotion_main(varargin)
             response.correct = (response.button_clicked == expe.(phase).condition(itrial).congruent);
             response.filename = emotionvoices(indexes(toPlay)).name;
         else
+            clickClown2continue = true;
             uiwait
-            for clownState = 1:5
-                Clown.State = sprintf('clownSpotLight_%d',clownState);
-                pause(0.01)
-            end
-            Clown.State = expe.(phase).condition(itrial).facelabel;
-            pause(0.6)
-            
-            Buttonup.State = 'on';
-            Buttondown.State = 'on';
-
+            clickClown2continue = false;
+        end % if simulateSubj
+        
+        for clownState = 1:5
+            Clown.State = sprintf('clownSpotLight_%d',clownState);
+            pause(0.01)
+        end
+        Clown.State = expe.(phase).condition(itrial).facelabel;
+        pause(0.6)
+        
+        Buttonup.State = 'on';
+        Buttondown.State = 'on';
+        
+        if ~simulateSubj
             uiwait();
             pause(0.5)
             Buttonup.State = 'off';
             Buttondown.State = 'off';
-
-            response.filename = emotionvoices(indexes(toPlay)).name;
-            response.correct = (response.button_clicked == expe.(phase).condition(itrial).congruent);
-            fprintf('Clicked button: %d\n', response.button_clicked);
-            fprintf('Response time : %d ms\n', round(response.response_time*1000));
-            fprintf('Response correct: %d\n\n', response.correct);
- 
-            if response.correct 
-                for confettiState = 1:7
-                    Confetti.State = sprintf('confetti_%d', confettiState);
+        else
+            response.button_clicked = randi([0,1]);
+            Buttonup.State = 'press';
+            response.timestamp = now();
+            response.response_time = toc();
+            response.respButton = 'no';
+            if response.button_clicked
+                response.respButton = 'yes';
+            end
+        end
+        
+       response.filename = emotionvoices(indexes(toPlay)).name;
+       response.correct = (response.button_clicked == expe.(phase).condition(itrial).congruent);
+       if response.correct
+            for confettiState = 1:7
+                Confetti.State = sprintf('confetti_%d', confettiState);
+                pause(0.2)
+            end
+            Confetti.State = 'off';
+            pause(0.3)
+        else
+            for shakeshake = 1:2
+                for parrotshake = 1:3
+                    Parrot.State = sprintf('parrot_shake_%d', parrotshake);
                     pause(0.2)
                 end
-                Confetti.State = 'off';
-                pause(0.3)
-            else
-                for shakeshake = 1:2
-                    for parrotshake = 1:3
-                        Parrot.State = sprintf('parrot_shake_%d', parrotshake);
-                        pause(0.2)
-                    end
-                end
-            end % if response.correct 
-        end % if simulateSubj
-        
-        response.condition = expe.(phase).condition(itrial);
-        response.cue = cue;
-        results.(phase).(cue).att(attempt).responses(itrial) = response;
-        save(options.res_filename, 'options', 'expe', 'results');
+            end
+        end % if response.correct
+    
+        fprintf('Clicked button: %d\n', response.button_clicked);
+        fprintf('Response time : %d ms\n', round(response.response_time*1000));
+        fprintf('Response correct: %d\n\n', response.correct);
 
+        response.condition = expe.(phase).condition(itrial);
+        results.(phase).(cue).att(attempt).responses(itrial) = response;
         
-        if (strcmp(phase, 'test')) % clow moves only in the test phase
-            if expe.(phase).condition(itrial).clownladderNmove
-                if ~ expe.(phase).condition(itrial).splash
-                    for iState = 1 : expe.(phase).condition(itrial).clownladderNmove
-                        %                 fprintf('%i', ladderStep)
+        save(options.res_filename, 'options', 'expe', 'results');
+        
+        if expe.test.condition(itrial).clownladderNmove ~= 0
+            if (strcmp(phase, 'test'))
+                if ~ expe.test.condition(itrial).splash
+                    for iState = 1 : expe.test.condition(itrial).clownladderNmove
                         Clownladder.State = sprintf('clownladder_%d%c',mod(ladderStep, 9),'a');
                         pause (0.2)
                         Clownladder.State = sprintf('clownladder_%d%c',mod(ladderStep, 9),'b');
@@ -224,16 +233,14 @@ function emotion_main(varargin)
                         pause(0.2)
                     end
                     Drops.State = 'empty';
-                end % if ~ expe.(phase).condition(itrial).splash
-            end % if expe.(phase).condition(itrial).clownladderNmove
-        end % if (strcmp(phase, 'test'))
+                end
+            end
+        end
         
         if itrial == options.(phase).total_ntrials
-            gameCommands.Scale = 4; 
+            gameCommands.Scale = 2; 
             gameCommands.State = 'finish';
-            pause(2);
-            close(gcf)
-        end
+         end
         
         % remove just played file from list of possible sound files
         emotionvoices(indexes(toPlay)) = [];
@@ -245,55 +252,58 @@ function emotion_main(varargin)
     function buttondownfcn(hObject, callbackdata)
         
         locClick = get(hObject,'CurrentPoint');
-        
         if starting == 1
-            
-            response.timestamp = now();
-            response.response_time = toc();
-            response.button_clicked = 0; % default in case they click somewhere else
-            
-          if Clown.State == expe.(phase).condition(itrial).facelabel
-          
+            % tumb's up
             if (locClick(1) >= Buttonup.clickL) && (locClick(1) <= Buttonup.clickR) && ...
                     (locClick(2) >= Buttonup.clickD) && (locClick(2) <= Buttonup.clickU)
-                Buttonup.State = 'press';
-                response.button_clicked = 1;
-                response.buttonID = 'yes';
-                uiresume
+                if strcmp(Clown.State, expe.(phase).condition(itrial).facelabel)
+                    Buttonup.State = 'press';
+                    response.timestamp = now();
+                    response.response_time = toc();
+                    response.button_clicked = 1;
+                    response.respButton = 'yes';
+                    uiresume
+                end
             end
-            
+            % tumb's down
             if (locClick(1) >= Buttondown.clickL) && (locClick(1) <= Buttondown.clickR) && ...
                     (locClick(2) >= Buttondown.clickD) && (locClick(2) <= Buttondown.clickU)
-                Buttondown.State = 'press'; 
-                response.button_clicked = 0;
-                response.buttonID = 'no';
-                uiresume
+                if strcmp(Clown.State, expe.(phase).condition(itrial).facelabel)
+                    Buttondown.State = 'press';
+                    response.timestamp = now();
+                    response.response_time = toc();
+                    response.respButton = 'no';
+                    response.button_clicked = 0; % default in case they click somewhere else
+                    uiresume
+                end
             end
             
-            if (locClick(1) >= Pool.clickL) && (locClick(1) <= Pool.clickR) && ...
-                    (locClick(2) >= Pool.clickD) && (locClick(2) <= Pool.clickU)
-                uiresume;
-                tic();
+            if (locClick(1) >= Clown.clickL) && (locClick(1) <= Clown.clickR) && ...
+                    (locClick(2) >= Clown.clickD) && (locClick(2) <= Clown.clickU)
+                if clickClown2continue
+                    Clown.State = expe.(phase).condition(itrial).facelabel;
+                    uiresume;
+                    tic();
+                end
             end
-          end
-          
-        else
-             if (locClick(1) >= gameCommands.clickL) && (locClick(1) <= gameCommands.clickR) && ...
-                (locClick(2) >= gameCommands.clickD) && (locClick(2) <= gameCommands.clickU)
-             starting = 1;
-             gameCommands.State = 'empty';
-             pause (1)
-             uiresume();
-             end
+        else %  else of 'if starting == 1'
+            if (locClick(1) >= gameCommands.clickL) && (locClick(1) <= gameCommands.clickR) && ...
+                    (locClick(2) >= gameCommands.clickD) && (locClick(2) <= gameCommands.clickU)
+                starting = 1;
+                gameCommands.State = 'empty';
+                pause (1)
+                uiresume();
+            end
         end
-    end
+        
+    end % buttondownfcn function
    
-    function keypressfcn(~,e)
-        if strcmp(e.Key, 'control') % OR 'space'
-            uiresume;
-            tic();
-        end
-    end
+%     function keypressfcn(~,e)
+%         if strcmp(e.Key, 'control') % OR 'space'
+%             uiresume;
+%             tic();
+%         end
+%     end
   
     for iPath = 1 : length(paths2Add)
         rmpath(paths2Add{iPath});
