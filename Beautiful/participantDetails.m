@@ -1,6 +1,7 @@
 
-options.subject_name = 'Jacquelien';
+% options.subject_name = 'Jacquelien';
 % options.subject_name = 'paolo';
+options.subject_name = 'test';
 options.age = 24;
 options.sex = 'f';
 options.language = 'Dutch'; % English or Dutch
