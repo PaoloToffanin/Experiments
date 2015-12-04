@@ -11,7 +11,7 @@ function gender_run(varargin)
 %   gender_run('tryout', 'test', 'english')
 %   gender_run
 
-    options.subject_name = 'fake';
+    options.subject_name = 'test';
     phase = 'test';
     options.language = 'dutch';
 %     options.language = 'english';

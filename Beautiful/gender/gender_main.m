@@ -5,7 +5,7 @@ function gender_main(expe, options, phase)
     starting = 0;
 
     autoplayer = false;
-    if strcmp(options.subject_name, 'fake');
+    if strcmp(options.subject_name, 'test');
         autoplayer = true;
     end
 
@@ -24,8 +24,9 @@ function gender_main(expe, options, phase)
                     nRep = nRep + 1;
                     options.subject_name  = sprintf('%s%s_%02.0f.mat', options.result_prefix, options.subject_name, nRep);
                     options.res_filename = fullfile(options.result_path, options.subject_name);
-                    [G, TVScreen, Buttonup, Buttondown, Speaker, gameCommands, Hands] = GenderGame;
+                    [G, TVScreen, Buttonup, Buttondown, Speaker, gameCommands, Hands] = gender_game(options);
                     G.onMouseRelease = @buttondownfcn;
+                    G.onKeyPress = @keypressfcn;
                 end
                 [expe, options] = gender_buildingconditions(options);
             case 'No'
@@ -131,7 +132,7 @@ function gender_main(expe, options, phase)
         end
     end
 
-%%    
+%%     
     function buttondownfcn(hObject, callbackdata)
         
         locClick = get(hObject,'CurrentPoint');
