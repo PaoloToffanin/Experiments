@@ -5,7 +5,7 @@ function generateStimuli(options, phase)
     
     delete(options.res_filename);
     
-    opt = char(questdlg('Delete previously processed sound files?','CRM','yes','no','no'));
+    opt = char(questdlg('Delete previously processed sound files?','Remove old sound files','yes','no','no'));
     switch opt
         case 'yes',
             delete([options.sound_path '/*.mat']);

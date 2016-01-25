@@ -1,5 +1,6 @@
 function fishy_run
-
+    
+rng('shuffle')
 run('../participantDetails.m')
 
 options = fishy_options(options);

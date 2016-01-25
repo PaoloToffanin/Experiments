@@ -10,17 +10,18 @@ function options = gender_options(options)
     
     [~, name] = system('hostname');
     options.result_path   = [options.home '/results/Gender'];
-%     options.sound_path = [options.home '/ownCloud/NVA/Dutch_equalized'];
     options.sound_path = [options.home '/sounds/NVA/Dutch_equalized'];
     if options.Bert
         options.tmp_path   = [options.home '/sounds/NVA/gender/processed/Bert'];
     else
         options.tmp_path   = [options.home '/sounds/NVA/gender/processed/Original/'];
     end
+    
     options.straight_path = '../lib/STRAIGHTV40_006b';
     options.spriteKitPath = '../lib/SpriteKit';
 
     if strncmp(name, 'debian', 6) % PT's computer
+        options.sound_path = [options.home '/ownCloud/NVA/Dutch_equalized'];
         if options.Bert
             options.tmp_path   = '/mnt/disk2/processedSounds/NVA/gender/Bert';
         else
@@ -55,6 +56,5 @@ function options = gender_options(options)
     % that it can be checked remotely. If the file cannot be reached, the
     % program will just continue silently.
     options.log_file = fullfile('results', 'status.txt');
-    
-    
+   
 end

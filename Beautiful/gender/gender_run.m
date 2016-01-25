@@ -71,11 +71,8 @@ function gender_run(varargin)
         end
         
         gender_main(expe, options, phase);
-        
-        %-------------------------------------------------
-        rmpath(options.straight_path);
-        rmpath(options.spriteKitPath);
-        
     end % end if generate
-    
+
+    rmpath(options.straight_path);
+    rmpath(options.spriteKitPath);    
 end

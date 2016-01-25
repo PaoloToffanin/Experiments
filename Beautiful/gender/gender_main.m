@@ -15,7 +15,7 @@ function gender_main(expe, options, phase)
         G.onMouseRelease = @buttondownfcn;
         G.onKeyPress = @keypressfcn;
     else
-        opt = char(questdlg(sprintf('%s phase COMPLETE. Run again?', phase),'CRM','Yes','No','Yes'));
+        opt = char(questdlg(sprintf('%s phase COMPLETE. Run again?', phase),['Re-run ' phase],'Yes','No','Yes'));
         switch opt
             case 'Yes'
                 if ~strcmp(options.subject_name, 'tryout');

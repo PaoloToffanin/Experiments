@@ -38,11 +38,11 @@ function emotion_main(varargin)
     end
     
     %% Setup experiment 
-    options.result_path = [options.home '/results/Emotion/'];
+    options.result_path = [options.home '/Results/Emotion/'];
     options.result_prefix = 'emo_';
     options.res_filename = [options.result_path, sprintf('%s%s.mat', options.result_prefix, options.subject_name)];
     
-    [attempt, expe, options, results] = checkExpOptions(options, phase, cue);
+    [attempt, expe, options, results] = emotion_checkOptions(options, phase, cue);
     if isempty(attempt) && isempty(expe) && isempty(options) && isempty(results)
         return
     end
@@ -247,6 +247,12 @@ function emotion_main(varargin)
         
     end
 
+    close all
+    
+    for iPath = 1 : length(paths2Add)
+        rmpath(paths2Add{iPath});
+    end
+    
 %% embedded game functions    
     
     function buttondownfcn(hObject, callbackdata)
@@ -305,9 +311,7 @@ function emotion_main(varargin)
 %         end
 %     end
   
-    for iPath = 1 : length(paths2Add)
-        rmpath(paths2Add{iPath});
-    end
+
 
 end
 

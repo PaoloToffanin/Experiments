@@ -3,6 +3,7 @@
 % options.subject_name = 'paolo';
 options.subject_name = 'test';
 options.age = 24;
+options.age = 8;
 options.sex = 'f';
 options.language = 'Dutch'; % English or Dutch
 options.kidsOrAdults = 'Kid'; % we leave empty for kids because I am not sure whether we'd fuck up some file names/if statements

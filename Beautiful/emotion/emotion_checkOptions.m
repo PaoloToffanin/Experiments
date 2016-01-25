@@ -1,4 +1,4 @@
-function [attempt, expe, options, results] = checkEmotionOptions(options, phase, cue)
+function [attempt, expe, options, results] = emotion_checkOptions(options, phase, cue)
 % Function checking whether the phases and cues should be repeated, or
 % simply added to the results structure (initializes results to empty if 
 % first run)
