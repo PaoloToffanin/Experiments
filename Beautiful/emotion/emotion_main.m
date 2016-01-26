@@ -1,15 +1,14 @@
-function emotion_main(varargin)
+function emotion_main(subject_name, phase, cue)
 % 
+
+    rng('shuffle')
    
-    options.subject_name = varargin{1};
-    phase = varargin{2};
-    cue = varargin{3};
+    options.subject_name = subject_name;
     simulateSubj = false;
     if strcmp(options.subject_name, 'test')
         simulateSubj = true;
     end
-    rng('shuffle')
-
+    
     paths2Add = {'../lib/SpriteKit', '../lib/MatlabCommonTools/'}; 
     for ipath = 1 : length(paths2Add)
         if ~exist(paths2Add{ipath}, 'dir')

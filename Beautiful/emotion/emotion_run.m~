@@ -13,29 +13,29 @@ function emotion_run
     % should we check whether this cue or phase have already been run?
     % input is checked with emotion_checkOptions, which is called in line:
     % 45 of emotion_main
-    
+    options.subject_name = participant.name;
     if strcmp(participant.kidsOrAdults, 'Adult')
-        if strcmp(participant.name, 'test')
+        if strcmp(options.subject_name, 'test')
             cue = cue(randperm(length(cue)));
             for icue = 1 : length(cue);
                 for iphase = 1 : length(phase)
-                    fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{icue})
-                    emotion_main(participant.name, phase{iphase}, cue{icue});
+                    fprintf('I am running %s %s %s\n', options.subject_name, phase{iphase}, cue{icue})
+                    emotion_main(options.subject_name, phase{iphase}, cue{icue});
                 end
             end
         else
             for icue = 1 : length(cue);
                 
                 for iphase = 1 : length(phase)
-                    fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{icue})
-                    emotion_main(participant.name, phase{iphase}, cue{icue});
+                    fprintf('I am running %s %s %s\n', options.subject_name, phase{iphase}, cue{icue})
+                    emotion_main(options.subject_name, phase{iphase}, cue{icue});
                 end
             end
         end
     else
         for iphase = 1 : length(phase)
-            fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{1})
-            emotion_main(participant.name, phase{iphase}, cue{1});
+            fprintf('I am running %s %s %s\n', options.subject_name, phase{iphase}, cue{1})
+            emotion_main(options.subject_name, phase{iphase}, cue{1});
         end
     end
     

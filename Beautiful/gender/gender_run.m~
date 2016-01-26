@@ -4,10 +4,20 @@ function gender_run
     run('../defineParticipantDetails.m')
 
     options.subject_name = participant.name;
-    options.language = lower(participant.language);
-    % options.stage = 'generation'; uncomment o generate sounds stimuli
     phase = 'test';
+    options.language = lower();
     options.stage = phase;
+    switch nargin 
+        case 1
+            options.subject_name = 'tryout';
+            options.stage = 'generation';
+        case 3
+            options.subject_name = varargin{1};
+            phase = varargin{2};
+            options.language = lower();
+    % this is also defined in defineParticipantDetails. It is kept here
+    % only for historical reference
+%     options.Bert = true;
     
     options = gender_options(options);
     
@@ -50,6 +60,7 @@ function gender_run
             end
             
         end
+        
         gender_main(expe, options, phase);
     end % end if generate
 
