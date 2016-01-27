@@ -33,7 +33,7 @@ function testRunner_GUI(participant)
     % This Push button callbacks runs the specified experiment
     function runTask_Callback(source, eventdata)
         cd(source.String);
-        source.Enable = 'off';
+        
         run([source.String '_run.m']);
         cd ..
     end

@@ -70,37 +70,38 @@ function participant = checkInputsSanity(participant, options)
     participant.expName(completedExps) = [];
     participant.buttonEnabled(completedExps) = {'off'};
 
-    %% check if emotion and fishy have been run in both versions for the kids
-    % Gender and fishy should have also two conditions in the response file.
-    % For kids, these two conditions are run seperately, so we need to
-    % make sure that they were run, or otherwise run them next.
-    if strcmp(participant.kidsOrAdults, 'Kid') && length(completedExps) == length(participant.expName)
-        repeated = {'fishy', 'emotion'};
-        for irep = 1 : length(repeated)
-            file = dir([options.home '/Results/' upper(repeated{irep}(1)) ...
-                repeated{irep}(2:end), '/*' ...
-                participant.name '*.mat']);
-            % loaded data need to be stored in a temporary variable otherwise
-            % they will overwrite the options structure
-            tmp = load([options.home '/Results/' upper(repeated{irep}(1)) ...
-                repeated{irep}(2:end) '/' file.name]);
-            results = tmp.results;
-            clear tmp
-            switch repeated{irep}
-                case 'emotion'
-                    if length(fields(results.test)) < 2
-                        participant.expName = {'emotion_run.m'};
-                        participant.expDir = {'emotion'};
-                    end
-                case 'fishy'
-                    if length(results.test.conditions) < 2
-                        participant.expName = {'fishy_run.m'};
-                        participant.expDir = {'fishy'};
-                    end
-                % note that we do not know which version was run, so that should be figure out sometime    
-            end
-        end
-    end
+% DO i need to do this twice?
+%     %% check if emotion and fishy have been run in both versions for the kids
+%     % Gender and fishy should have also two conditions in the response file.
+%     % For kids, these two conditions are run seperately, so we need to
+%     % make sure that they were run, or otherwise run them next.
+%     if strcmp(participant.kidsOrAdults, 'Kid') && length(completedExps) == length(participant.expName)
+%         repeated = {'fishy', 'emotion'};
+%         for irep = 1 : length(repeated)
+%             file = dir([options.home '/Results/' upper(repeated{irep}(1)) ...
+%                 repeated{irep}(2:end), '/*' ...
+%                 participant.name '*.mat']);
+%             % loaded data need to be stored in a temporary variable otherwise
+%             % they will overwrite the options structure
+%             tmp = load([options.home '/Results/' upper(repeated{irep}(1)) ...
+%                 repeated{irep}(2:end) '/' file.name]);
+%             results = tmp.results;
+%             clear tmp
+%             switch repeated{irep}
+%                 case 'emotion'
+%                     if length(fields(results.test)) < 2
+%                         participant.expName = {'emotion_run.m'};
+%                         participant.expDir = {'emotion'};
+%                     end
+%                 case 'fishy'
+%                     if length(results.test.conditions) < 2
+%                         participant.expName = {'fishy_run.m'};
+%                         participant.expDir = {'fishy'};
+%                     end
+%                 % note that we do not know which version was run, so that should be figure out sometime    
+%             end
+%         end
+%     end
 
     %% if the experimenter entered a name that already exists check whether:
     % 1 - he is aware of it

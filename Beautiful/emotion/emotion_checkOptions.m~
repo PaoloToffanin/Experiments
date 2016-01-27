@@ -25,16 +25,16 @@ function [attempt, expe, options, results, cue] = emotion_checkOptions(options, 
                     if length(results.(previousPhases{indexPhase}).(previousCues{indexCue}).att(nAttempts).responses) ...
                             == length(expe.(previousPhases{indexPhase}).condition)
                         % check:
-                        % A: switch to the other cue if not completed 
+                        % A: whether the other cue was completed too 
                         if length(fieldnames(results.(previousPhases{indexPhase}))) == 1
-                            cue = {'normalized', 'intact'}; % overwrite cue to assign the other cue
-                            cue(strcmp(cue, cue{indexCue})) = [];
+                            possibleCues = {'normalized', 'intact'};
+                            cue = ; % this is the other cue
                             options = emotion_getCue(cue, options);
                             [expe, options] = building_conditions(options);
                             % results remains the same, should be updated
                             % during the task
                         else
-                        % B: ask whether a new attempt should be added 
+                        % B: whether a new attempt should be added 
                             choice = questdlg(sprintf([[options.subject_name ' already completed ' phase ' ' cue '\n'], ...
                                 'Would you like to repeat it?']), ...
                                 'Previous phase or cue confound', ...
