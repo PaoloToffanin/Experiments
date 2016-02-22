@@ -14,17 +14,18 @@ function participant = checkInputsSanity(participant, options)
     end
 
     %% initialization variables for EXPERIMENT RUNNER GUI
-    participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
+%     participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
     participant.expDir = {'NVA', 'fishy', 'emotion', 'gender'};
     if strcmp(participant.kidsOrAdults, 'Kid')
-        participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
+%         participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
         participant.expDir = [participant.expDir {'fishy', 'emotion'}];
     end
     participant.expButton = participant.expDir;
     participant.buttonEnabled(1:length(participant.expButton)) = {'on'};
     % check if the study was run before and skip those tasks
     completedExps = [];
-    for iExp = 1 : length(unique(participant.expName))
+%     for iExp = 1 : length(unique(participant.expName))
+    for iExp = 1 : length(unique(participant.expDir))
         file = dir([options.home '/Results/' upper(participant.expDir{iExp}(1)) ...
             participant.expDir{iExp}(2:end), '/*' ...
             participant.name '*.mat']);
@@ -67,7 +68,7 @@ function participant = checkInputsSanity(participant, options)
     end
     % remove experiments that have already be completed
     participant.expDir(completedExps) = [];
-    participant.expName(completedExps) = [];
+%     participant.expName(completedExps) = [];
     participant.buttonEnabled(completedExps) = {'off'};
 
 % DO i need to do this twice?
@@ -107,7 +108,8 @@ function participant = checkInputsSanity(participant, options)
     % 1 - he is aware of it
     % 2 - if he is aware of it whether s/he wants to repeat the experiment
     % overwriting the data (or are the result structures just extended?)
-    if isempty(participant.expName)
+%     if isempty(participant.expName)
+    if isempty(participant.expDir)
         button = questdlg(sprintf(['Run again ' participant.name '?']),...
             ['sub ID: ' participant.name ' already run'], 'yes','no','no');
         if strcmp(button, 'no')
@@ -120,7 +122,7 @@ function participant = checkInputsSanity(participant, options)
             button = questdlg(sprintf(['You are overwriting ' participant.name '''s data']),...
                 ['Overwrite ' participant.name ' data?'], 'OK','No, thanks','No, thanks');
             if strcmp(button, 'OK')
-                participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
+%                 participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
                 participant.expDir = {'NVA', 'fishy', 'emotion', 'gender'};
                 participant.expButton = participant.expDir;
                 if strcmp(participant.kidsOrAdults, 'Kid')
@@ -137,11 +139,12 @@ function participant = checkInputsSanity(participant, options)
     %% randomize presentation order
     rng('shuffle');
     if strcmp(participant.kidsOrAdults, 'Kid') && isempty(completedExps)
-        participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
+%         participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
         participant.expDir = [participant.expDir {'fishy', 'emotion'}];
     end
-    randomSequence = randperm(length(participant.expName));
-    participant.expName= participant.expName(randomSequence);
+    randomSequence = randperm(length(participant.expDir) - 1) + 1;% NVA is always first 
+%     randomSequence = randperm(length(participant.expName));
+%     participant.expName= participant.expName(randomSequence);
     participant.expDir = participant.expDir(randomSequence);
 
 
@@ -160,7 +163,7 @@ function participant = checkInputsSanity(participant, options)
                 end
                 if (distances(2) - distances(1)) == 1
                     randomSequence = randperm(length(participant.expName));
-                    participant.expName= participant.expName(randomSequence);
+%                     participant.expName= participant.expName(randomSequence);
                     participant.expDir = participant.expDir(randomSequence);
                     check = true;
                 end
@@ -168,4 +171,5 @@ function participant = checkInputsSanity(participant, options)
         end
     end
 
+    save([options.home '/Results/' participant.name '.mat'], '-struct', 'participant');
 end % end of the function

@@ -185,6 +185,8 @@ function gender_main(expe, options, phase)
         end
     end
    
+    % close current figure
+    close gcf
 end
 
 

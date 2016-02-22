@@ -10,7 +10,7 @@ function testRunner_GUI(participant)
     heigthGUI = 285;
     f = figure('Visible','off','Position',[360, 500, 450, heigthGUI]);
     
-    htext = uicontrol('Style', 'text', 'String', ...
+    uicontrol('Style', 'text', 'String', ...
         sprintf('Testing %s', participant.name),...
         'Position', [25, heigthGUI/2 - 70/2, 70, 50]);
        
@@ -27,11 +27,13 @@ function testRunner_GUI(participant)
     end
 
     % align all components, except the axes, along their centers.
-    align([task(1:length(participant.expName)).b],'Center','None');         
+%     align([task(1:length(participant.expName)).b],'Center','None');         
+    align([task(1:length(participant.expDir)).b],'Center','None');         
     f.Visible = 'on';
     
     % This Push button callbacks runs the specified experiment
-    function runTask_Callback(source, eventdata)
+%     function runTask_Callback(source, eventdata)
+    function runTask_Callback(source, ~)
         cd(source.String);
         source.Enable = 'off';
         run([source.String '_run.m']);
