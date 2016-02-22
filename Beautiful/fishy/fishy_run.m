@@ -1,7 +1,7 @@
 function fishy_run
     
 rng('shuffle')
-run('../participantDetails.m')
+run('../defineParticipantDetails.m')
 
 options = fishy_options(options);
 

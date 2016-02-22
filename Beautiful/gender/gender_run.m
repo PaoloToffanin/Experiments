@@ -1,32 +1,13 @@
-function gender_run(varargin)
-%   function expe_run(varargin)
-%   can be run as:
-%   1) gender_run % then it will run in automatic player with defaults:
-%       expe_run('tryout', 'testing', 'english')
-%
-%   2) gender_run('english') % than it will only create the stimuli
-%
-%   3) gender_run(options.subject_name, phase) 
-%   phase can be: 'training', 'test'
-%   gender_run('tryout', 'test', 'english')
-%   gender_run
+function gender_run
 
-    options.subject_name = 'test';
+    rng('shuffle')
+    run('../defineParticipantDetails.m')
+
+    options.subject_name = participant.name;
+    options.language = lower(participant.language);
+    % options.stage = 'generation'; uncomment o generate sounds stimuli
     phase = 'test';
-    options.language = 'dutch';
-%     options.language = 'english';
     options.stage = phase;
-    switch nargin 
-        case 1
-            options.subject_name = 'tryout';
-            options.stage = 'generation';
-        case 3
-            options.subject_name = varargin{1};
-            phase = varargin{2};
-            options.language = varargin{3};
-    end
-    
-    options.Bert = true;
     
     options = gender_options(options);
     
@@ -69,7 +50,6 @@ function gender_run(varargin)
             end
             
         end
-        
         gender_main(expe, options, phase);
     end % end if generate
 

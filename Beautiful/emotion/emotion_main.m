@@ -1,15 +1,14 @@
-function emotion_main(varargin)
+function emotion_main(subject_name, phase, cue)
 % 
+
+    rng('shuffle')
    
-    options.subject_name = varargin{1};
-    phase = varargin{2};
-    cue = varargin{3};
+    options.subject_name = subject_name;
     simulateSubj = false;
     if strcmp(options.subject_name, 'test')
         simulateSubj = true;
     end
-    rng('shuffle')
-
+    
     paths2Add = {'../lib/SpriteKit', '../lib/MatlabCommonTools/'}; 
     for ipath = 1 : length(paths2Add)
         if ~exist(paths2Add{ipath}, 'dir')
@@ -20,15 +19,7 @@ function emotion_main(varargin)
     end
     
     options.home = getHome;
-    
-    switch cue
-        case 'normalized'
-            options.soundDir = [options.home '/sounds/Emotion_normalized/'];
-        case 'intact'
-            options.soundDir = [options.home '/sounds/Emotion/'];
-        otherwise
-            error('cue option does not exists')
-    end
+    options = emotion_getCue(options, cue);
 
     if ~exist(options.soundDir, 'dir')
         error(['Sounds folder ' options.soundDir ' does not exists']);
@@ -42,7 +33,7 @@ function emotion_main(varargin)
     options.result_prefix = 'emo_';
     options.res_filename = [options.result_path, sprintf('%s%s.mat', options.result_prefix, options.subject_name)];
     
-    [attempt, expe, options, results] = emotion_checkOptions(options, phase, cue);
+    [attempt, expe, options, results, cue] = emotion_checkOptions(options, phase, cue);
     if isempty(attempt) && isempty(expe) && isempty(options) && isempty(results)
         return
     end
@@ -247,7 +238,7 @@ function emotion_main(varargin)
         
     end
 
-    close all
+    close gcf
     
     for iPath = 1 : length(paths2Add)
         rmpath(paths2Add{iPath});

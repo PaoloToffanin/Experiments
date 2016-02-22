@@ -12,8 +12,8 @@ function NVA_run
 %
 
     rng('shuffle')
-    run('../participantDetails.m') % this load options with subject's details
-    
+    run('../defineParticipantDetails.m')
+
     pathsToAdd = {'../lib/MatlabCommonTools/'};
     for iPath = 1 : length(pathsToAdd)
         addpath(pathsToAdd{iPath})
