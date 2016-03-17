@@ -1,4 +1,4 @@
-function [expe, options] = repeatOrStop(phase, options)
+function [expe, options] = repeatOrStop(phase, options, G)
 
     oldimage = get(0,'DefaultImageVisible');
     set(0, 'DefaultImageVisible','off')
@@ -9,7 +9,7 @@ function [expe, options] = repeatOrStop(phase, options)
     
     if strcmp(button, 'No')
         msgbox('OK, ciaociao')
-        close(gcf);
+        close(G.FigureHandle);
         expe = [];
         options = [];
     else

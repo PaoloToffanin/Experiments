@@ -1,13 +1,13 @@
-function el = friendInit(gameWidth, scrsz4, bigFish, friendname, iFriend)
+function el = friendInit(gameWidth, scrsz4, bigFish, friendname, iFriend, options)
     
 
     
     el = SpriteKit.Sprite(sprintf('archfriend%d', iFriend));
-    el.initState('swim1', ['../img/fixed/' friendname '_swim_a.png'], true);
-    el.initState('swim2', ['../img/fixed/' friendname '_swim_b.png'], true);
-    el.initState('swim3', ['../img/fixed/' friendname '_swim_a.png'], true);
-    el.initState('swim4', ['../img/fixed/' friendname '_swim_c.png'], true);
-    imgArea = size(imread(['../img/fixed/' friendname '_talk_a.png']));
+    el.initState('swim1', [options.locationImages friendname '_swim_a.png'], true);
+    el.initState('swim2', [options.locationImages friendname '_swim_b.png'], true);
+    el.initState('swim3', [options.locationImages friendname '_swim_a.png'], true);
+    el.initState('swim4', [options.locationImages friendname '_swim_c.png'], true);
+    imgArea = size(imread([options.locationImages friendname '_talk_a.png']));
     addprop(el, 'width');
     el.width = round(imgArea(2)/2);
     addprop(el, 'heigth');

@@ -1,4 +1,4 @@
-function interface(phase)
+function emotion_AdultsGUI(phase)
     % interface for emotion task
     simulateSubj = false;
     if regexp(phase, 'autoplay')

@@ -1,17 +1,5 @@
 function participant = checkInputsSanity(participant, options)
 
-    button = questdlg(sprintf(['sub ID: ' participant.name '\n',...
-        'age: %d \n',...
-        'sex: ' participant.sex '\n',...
-        participant.kidsOrAdults ' version of tasks\n',...
-        'language: ' participant.language '\n', ...
-        ], participant.age ),...
-        'Are participants info correct?','yes','no','no');
-
-    if strcmp(button, 'no')
-        disp('Please enter valid participant details')
-        return
-    end
 
     %% initialization variables for EXPERIMENT RUNNER GUI
 %     participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
@@ -38,16 +26,20 @@ function participant = checkInputsSanity(participant, options)
                 file.name]);
             switch participant.expDir{iExp}
                 case 'NVA'
-                    if length(fields(tmp.responses)) == 2
+                    if length(fields(tmp.responses)) >= 2
                         completedExps = [completedExps iExp];
                     end
                 case 'fishy'
                     % we care only of test, training they can do redo
-                    switch length(tmp.results.test.conditions)
-                        case 2
-                            completedExps = [completedExps find(strcmp(participant.expDir, participant.expDir{iExp}))];
-                        case 1
-                            completedExps = [completedExps iExp];
+                    if isfield(tmp,'results')
+                        if isfield(tmp.results, 'test')
+                            switch length(tmp.results.test.conditions)
+                                case 2
+                                    completedExps = [completedExps find(strcmp(participant.expDir, participant.expDir{iExp}))];
+                                case 1
+                                    completedExps = [completedExps iExp];
+                            end
+                        end
                     end
                 case 'emotion'
                     % we care only of test, training they can do redo
@@ -119,7 +111,7 @@ function participant = checkInputsSanity(participant, options)
         else
             % reinitialize
             % IS THIS OVERWRITING THE FILE OR IS IT EXTENDING THE STRUCTURES?
-            button = questdlg(sprintf(['You are overwriting ' participant.name '''s data']),...
+            button = questdlg(sprintf(['You are extending ' participant.name '''s data']),...
                 ['Overwrite ' participant.name ' data?'], 'OK','No, thanks','No, thanks');
             if strcmp(button, 'OK')
 %                 participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
@@ -138,14 +130,11 @@ function participant = checkInputsSanity(participant, options)
 
     %% randomize presentation order
     rng('shuffle');
-    if strcmp(participant.kidsOrAdults, 'Kid') && isempty(completedExps)
-%         participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
-        participant.expDir = [participant.expDir {'fishy', 'emotion'}];
-    end
+
     randomSequence = randperm(length(participant.expDir) - 1) + 1;% NVA is always first 
 %     randomSequence = randperm(length(participant.expName));
 %     participant.expName= participant.expName(randomSequence);
-    participant.expDir = participant.expDir(randomSequence);
+    participant.expDir = {'NVA', participant.expDir{randomSequence}};
 
 
     if strcmp(participant.kidsOrAdults, 'Kid')
@@ -162,7 +151,7 @@ function participant = checkInputsSanity(participant, options)
                     break
                 end
                 if (distances(2) - distances(1)) == 1
-                    randomSequence = randperm(length(participant.expName));
+                    randomSequence = randperm(length(participant.expDir));
 %                     participant.expName= participant.expName(randomSequence);
                     participant.expDir = participant.expDir(randomSequence);
                     check = true;
@@ -171,5 +160,5 @@ function participant = checkInputsSanity(participant, options)
         end
     end
 
-    save([options.home '/Results/' participant.name '.mat'], '-struct', 'participant');
+
 end % end of the function

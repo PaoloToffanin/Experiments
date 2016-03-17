@@ -8,7 +8,7 @@ function gender_run
     % options.stage = 'generation'; uncomment o generate sounds stimuli
     phase = 'test';
     options.stage = phase;
-    
+    options.Bert = false;
     options = gender_options(options);
     
     if ~exist(options.result_path, 'dir')

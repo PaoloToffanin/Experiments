@@ -1,4 +1,4 @@
-function options = emotion_getCue(options, cue)
+function options = emotion_setSndFilesDir(options, cue)
 
     switch cue
         case 'normalized'

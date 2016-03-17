@@ -11,20 +11,19 @@ options.instructions.test = options.instructions.training;
 
 %----------- Signal options
 options.fs = 44100;
-warning('is_test_machine is removed\n')
-% if is_test_machine % we are going to remove is_test_machine from future version
+
 %     options.attenuation_dB = 3;  % General attenuation
-% else
     options.attenuation_dB = 27; % General attenuation
-% end
-% if options.bert
-%     options.attenuation_dB = 3; 
-% end
+if options.Bert
+    options.attenuation_dB = 3; 
+end
 
 options.ear = 'both'; % right, left or both
-% if options.bert
-%     options.ear = 'left'; 
-% end
+
+if options.Bert
+    options.ear = 'left'; 
+end
+
 %----------- Design specification
 options.test.n_repeat = 1; % Number of repetition per condition
 options.test.step_size_modifier = 1/sqrt(2);

@@ -1,7 +1,7 @@
-function friendsID = friendNames
+function friendsID = friendNames(options)
 % extract the names of friends from the available files
 
-    files = dir('../img/fixed/*.png');
+    files = dir([options.locationImages '*.png']);
     % BACKGROUND and FISHY are not friends;
     files = files(cellfun('isempty', strfind({files.name}, 'BACKGROUND')));
     files = files(cellfun('isempty', strfind({files.name}, 'FISHY')));

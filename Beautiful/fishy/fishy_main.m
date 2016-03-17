@@ -6,9 +6,19 @@ function fishy_main(varargin)
         options = varargin{2};
         phase = varargin{3};
     else
-        run('../participantDetails.m')
-        options = fishy_options(options);
-        phase = 'test';
+        % code executed only when fishy is run within this file.
+        participant.name = 'test';
+        participant.age = 24;
+        participant.age = 8;
+        participant.sex = 'f';
+        participant.language = 'Dutch'; % English or Dutch
+        participant.kidsOrAdults = 'Kid';
+        addpath('../lib/MatlabCommonTools/');
+        options.home = getHome;
+        options.Bert = false; % true to run experiments with Bert options
+        rmpath('../lib/MatlabCommonTools/');
+        options = fishy_options(options, participant);
+        phase = 'training';
     end
 
     results = struct();
@@ -19,7 +29,9 @@ function fishy_main(varargin)
     if nargin == 0
         expe = tmp.expe;
         options = tmp.options;
-        paths2Add = {'../lib/SpriteKit', '../lib/MatlabCommonTools/'};
+        expe.training.conditions(1).done = 0;
+        paths2Add = {'../lib/SpriteKit', ...
+                     '../lib/MatlabCommonTools/'};
         for ipath = 1 : length(paths2Add)
             if ~exist(paths2Add{ipath}, 'dir')
                 error([paths2Add{ipath} ' does not exists, check the ../']);
@@ -28,19 +40,17 @@ function fishy_main(varargin)
             end
         end
     end
-
     clear tmp
 
     starting = 1;
-
-    beginning_of_session = now();
-
-    %=============================================================== MAIN LOOP
     simulate = strcmp(options.subject_name, 'test');
-    while mean([expe.( phase ).conditions.done])~=1 % Keep going while there are some conditions to do
 
+    while mean([expe.( phase ).conditions.done]) ~= 1
+% NOTE: this loop is interupted for kids at the end of one condition  
+        
+        % Find first condition not done
+        i_condition = find([expe.( phase ).conditions.done] == 0, 1);
         starting = 0;
-
         if simulate
             %       simulResp = randi([0,1],151,1);
             % smaller number of correct answers
@@ -53,9 +63,12 @@ function fishy_main(varargin)
             %         simulResp = simulResp(randperm(length(simulResp)));
         end
 
-        % Find first condition not done
-        i_condition = find([expe.( phase ).conditions.done] == 0, 1);
-        fprintf('\n============================ %s condition %d / %d ==========\n',phase, i_condition, length(expe.( phase ).conditions))
+%         % Find first condition not done
+%         i_condition = find([expe.( phase ).conditions.done] == 0, 1);
+%         %fprintf('\n============================ %s condition %d / %d ==========\n',phase, i_condition, length(expe.( phase ).conditions))
+        
+        fprintf('\n%s\n\n', phase);
+        
         condition = expe.( phase ).conditions(i_condition);
 
         % Prepare unitary vector for this voice direction
@@ -65,7 +78,7 @@ function fishy_main(varargin)
         u = [u_f0, u_ser];
         u = u / sqrt(sum(u.^2));
 
-        fprintf('----------\nUnitary vector: %s\n', num2str(u));
+%         fprintf('----------\nUnitary vector: %s\n', num2str(u));
 
         difference = options.(phase).starting_difference;
         step_size  = options.(phase).initial_step_size;
@@ -77,10 +90,11 @@ function fishy_main(varargin)
         beginning_of_run = now();
 
         %% Game STUFF
-        friendsID = friendNames;
+        friendsID = friendNames(options);
         friendsID = friendsID(randperm(length(friendsID))); % otherwise they are always in the same order
         targetSize = .5; % this is the size of the fish when it gets into the second arch
-        [G, bkg, bigFish, bubbles, gameCommands, hourglass] = setUpGame(options.(phase).terminate_on_nturns, length(friendsID), targetSize);
+        [G, bkg, bigFish, bubbles, gameCommands, hourglass] = ...
+            setUpGame(options.(phase).terminate_on_nturns, length(friendsID), targetSize, options);
         
         G.onMouseRelease = @buttondownfcn;
         
@@ -96,10 +110,22 @@ function fishy_main(varargin)
         % entrance, display all friends in second arc
         for ifriend = 1 : length(friendsID)
             speedSwim = 4;
-            friendOn2Arch{ifriend} = friendInit(G.Size(1), G.Size(2), bigFish, friendsID{ifriend}, ifriend);
-         %   friendOn2Arch{ifriend} = swim(friendOn2Arch{ifriend}, speedSwim, 'in', G.Size(1));
+            friendOn2Arch{ifriend} = friendInit(G.Size(1), G.Size(2), bigFish, friendsID{ifriend}, ifriend, options);
+            friendOn2Arch{ifriend} = swim(friendOn2Arch{ifriend}, speedSwim, 'in', G.Size(1));
 
         end
+        
+        % show circles
+        for iCircle = 1 : length(friendsID)
+            % adjust circles' location to friends' locations
+%             rubbishFriend = friendInit(G.Size(1), G.Size(2), bigFish, friendsID{1}, 1, options);
+%             rubbishFriend = getTrajectory(rubbishFriend, ...
+%                 [bigFish.arcAround1(:, iCircle)'], [0,0], 4, targetSize, 2);
+%             G.Children{6 + length(friendsID) - iCircle}.Location = rubbishFriend.trajectory(end, 1:2);
+            G.Children{6 + length(friendsID) - iCircle}.State = 'circle';
+            pause(.025);
+        end
+%         clear rubbishFriend;
         %G.play(@()friendsEnter(friendOn2Arch));
         
         friendsLoop = repelem([1 : length(bigFish.availableLocArc1)], length(friendsID));
@@ -111,7 +137,6 @@ function fishy_main(varargin)
         n_attempt = expe.( phase ).conditions(i_condition).attempts;
         countCorrectResponses = 0;
         previousRespAcc = 1; % accuracy of the previous response, one for the beginning otherwise friends don't swim in
-        posOn2ndArch = 0;
         
         while true
 
@@ -127,7 +152,7 @@ function fishy_main(varargin)
                 if tmpIdx == 0
                     tmpIdx = length(friendsLoop);
                 end
-                friends = friendUpdate(G.Size(1), G.Size(2), friendsID{friendsLoop(tmpIdx)});
+                friends = friendUpdate(G.Size(1), G.Size(2), friendsID{friendsLoop(tmpIdx)}, options);
                 speedSwim = 40; % speed fish swim in. NOTE: it's inverted, high number = slow
                 if simulate 
                     speedSwim = 4; % speed fish swim in. NOTE: it's inverted, high number = slow
@@ -142,7 +167,7 @@ function fishy_main(varargin)
                 friends{response.button_clicked}.State = 'swim1';
             end 
 
-            fprintf('\n------------------------------------ Trial\n');
+            fprintf('\n---------------------%s Trial %i\n', phase, countTrials);
             % Prepare the stimulus: PT: if we need to replay the trial now new values should be created
             [response.button_correct, player, isi, response.trial] = ...
                 fishy_make_stim(options, difference, u, condition);
@@ -171,9 +196,7 @@ function fishy_main(varargin)
                     availAnswers(response.button_correct) = [];
                     response.button_clicked = availAnswers(1);
                 end
-
                 [response.response_time, response.timestamp]= deal(1);
-
             end
 
             % reset friends to previous state, besides from the clicked one
@@ -198,19 +221,19 @@ function fishy_main(varargin)
             response.condition = condition;
             response.condition.u = u; % what is u?
 
-            fprintf('Difference    : %.1f st (%.1f st GPR, %.1f st VTL)\n', ...
-                difference, difference*u(1), difference*u(2));
-            fprintf('Correct button: %d\n', response.button_correct);
-            fprintf('Clicked button: %d\n', response.button_clicked);
-            fprintf('Response time : %d ms\n', round(response.response_time*1000));
-            fprintf('Time since beginning of run    : %s\n', datestr(...
-                response.timestamp - beginning_of_run, 'HH:MM:SS.FFF'));
-            fprintf('Time since beginning of session: %s\n', datestr(...
-                response.timestamp - beginning_of_session, 'HH:MM:SS.FFF'));
-
+%             fprintf('Difference    : %.1f st (%.1f st GPR, %.1f st VTL)\n', ...
+%                 difference, difference*u(1), difference*u(2));
+%             fprintf('Correct button: %d\n', response.button_correct);
+%             fprintf('Clicked button: %d\n', response.button_clicked);
+%             fprintf('Response time : %d ms\n', round(response.response_time*1000));
+%             fprintf('Time since beginning of run    : %s\n', datestr(...
+%                 response.timestamp - beginning_of_run, 'HH:MM:SS.FFF'));
+%             fprintf('Time since beginning of session: %s\n', datestr(...
+%                 response.timestamp - beginning_of_session, 'HH:MM:SS.FFF'));
+% 
             % add fields to the structure
             if ~isfield(results, phase) || ...
-                    i_condition==length(results.( phase ).conditions)+1
+                    i_condition == length(results.( phase ).conditions)+1
                 results.( phase ).conditions(i_condition) = struct('att', struct('responses', struct(), ...
                     'differences', [], 'steps', [], 'diff_i_tp', [], 'threshold', NaN, 'sd', []));
             end
@@ -238,7 +261,7 @@ function fishy_main(varargin)
                 end
                 friendOnArch{end} = getTrajectory(friendOnArch{end}, [bigFish.arcAround1(:,bigFish.availableLocArc1(posOnArch))'], ...
                     [0,0], 4, targetSize, speedSwim);
-
+                
                 availableResponses = 1:3;
                 availableResponses(response.button_clicked) = [];
                 speedSwim = ceil(size(friends{response.button_clicked}.trajectory,1) / 2);
@@ -247,6 +270,8 @@ function fishy_main(varargin)
                 friends{availableResponses(1)} = swim(friends{availableResponses(1)}, speedSwim, 'out', G.Size(1));
                 friends{availableResponses(2)} = swim(friends{availableResponses(2)}, speedSwim, 'out', G.Size(1));
                 play(G, @()correctAnswer(friendOnArch{end}, friends{availableResponses(1)}, friends{availableResponses(2)}));
+                % ajust friend in right location, not sure what's wrong with trajectory computation.
+                friendOnArch{end}.Location = G.Children{6 + length(friendsID) - posOnArch}.Location; 
                 % increase size of the friend
                 for idx = 1 : length(friendOn2Arch)
                    if  strcmp(friendOn2Arch{idx}.filename, friendOnArch{end}.filename)
@@ -262,60 +287,41 @@ function fishy_main(varargin)
                     removeFriendsOnFirstArc(friendOnArch);
                     friendOnArch = {};
                 end
-            end
-            
-            
+            end % if response.correct
             
             if (strcmp(phase, 'training'))
                 terminate = false;
                 if (countTrials == options.training.terminate_on_ntrials)
                     terminate = true;
                     expe.training.conditions(i_condition).done = 1;
-                    pause(5);
                 end
             else
                 [results, expe, terminate, nturns] = ...
                     determineIfExit(results, expe, steps, differences, phase, options, ...
                     response_accuracy, n_attempt, i_condition, u);
-
                 hourglass.State = sprintf('hourglass_%d', nturns);
-
             end
-
+            
             if terminate
                 gameCommands.State = 'finish';
                 save(options.res_filename, 'options', 'expe', 'results');
-                pause(5);
+                pause(2);
                 close(G.FigureHandle)
-                break;
+                if strcmp(options.kidsOrAdults, 'Kid')
+                    return;
+                else
+                    break;
+                end
             end
-
             % Save the responses
             results.( phase ).conditions(i_condition).att(n_attempt).duration = response.timestamp - beginning_of_run;
             save(options.res_filename, 'options', 'expe', 'results')
-
-
-        end
-
+        end %while true
         % Save the response (should already be saved... but just to be sure...)
         save(options.res_filename, 'options', 'expe', 'results');
-
     end % end of the 'conditions' while
 
-    % If we're out of the loop because the phase is finished ask the
-    % experimenter if s/he wants a repetition
-    if mean([expe.( phase ).conditions.done])==1
-        [expe, options] = repeatOrStop(phase, options);
-        if isempty(expe) && isempty(options)
-            return
-        else
-            fishy_main(expe, options, phase);
-        end
-    end
-
-    %===============================================================
-    %% nested functions for the game
-    
+%% nested functions for the game
     function friendsEnter(friends)
         
         bkg.scroll('right', 1);

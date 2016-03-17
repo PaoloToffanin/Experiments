@@ -29,31 +29,32 @@ function [attempt, expe, options, results, cue] = emotion_checkOptions(options, 
                         if length(fieldnames(results.(previousPhases{indexPhase}))) == 1
                             cue = {'normalized', 'intact'}; % overwrite cue to assign the other cue
                             cue(strcmp(cue, cue{indexCue})) = [];
-                            options = emotion_getCue(cue, options);
+%                             options = emotion_getCue(cue, options);
                             [expe, options] = building_conditions(options);
                             % results remains the same, should be updated
                             % during the task
                         else
                         % B: ask whether a new attempt should be added 
-                            choice = questdlg(sprintf([[options.subject_name ' already completed ' phase ' ' cue '\n'], ...
-                                'Would you like to repeat it?']), ...
-                                'Previous phase or cue confound', ...
-                                'yes','no','no');
-                            % Handle response
-                            switch choice
-                                case 'yes'
-                                    disp('New attempt coming right up.')
+%                             choice = questdlg(sprintf([[options.subject_name ' already completed ' phase ' ' cue '\n'], ...
+%                                 'Would you like to repeat it?']), ...
+%                                 'Previous phase or cue confound', ...
+%                                 'yes','no','no');
+%                             % Handle response
+%                             switch choice
+%                                 case 'yes'
+%                                     disp('New attempt coming right up.')
+                       % make a new attempt             
                                     attempt = nAttempts + 1;
-                                case 'no'
-                                    disp('Experiments terminated.')
-                                    % make all the output empty so that we can use
-                                    % it to stop the function execution in main
-                                    attempt = [];
-                                    expe = [];
-                                    options = [];
-                                    results = [];
-                                    return
-                            end
+%                                 case 'no'
+%                                     disp('Experiments terminated.')
+%                                     % make all the output empty so that we can use
+%                                     % it to stop the function execution in main
+%                                     attempt = [];
+%                                     expe = [];
+%                                     options = [];
+%                                     results = [];
+%                                     return
+%                             end
                         end
                     else
                         % update attempts

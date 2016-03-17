@@ -110,12 +110,12 @@ function [expe, options] = building_conditions(options)
     expe.training = training;
     expe.facerecognition = options.facerecognition;
 
-    %-- save
+    %-- save: NO!! this overwrite stuff all time!!!
 
-    if isfield(options, 'res_filename')
-        save(options.res_filename, 'options', 'expe');
-    else
-        warning('The test file was not saved: no filename provided.');
-    end
+%     if isfield(options, 'res_filename')
+%         save(options.res_filename, 'options', 'expe');
+%     else
+%         warning('The test file was not saved: no filename provided.');
+%     end
 
 end

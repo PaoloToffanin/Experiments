@@ -190,8 +190,13 @@ persistent firsttime;
 
 if isempty(firsttime)
     firsttime = true;
-    warning('MATLAB:SpriteKit:MissingImageTbx',...
-    'Image Processing Toolbox is not installed. Crude boundaries will be used.');
+    % paol8: remove tedious warning. 
+%     warning('MATLAB:SpriteKit:MissingImageTbx',...
+%     'Image Processing Toolbox is not installed. Crude boundaries will be used.');
+    fprintf(['\n MATLAB:SpriteKit:MissingImageTbx',...
+    'Image Processing Toolbox is not installed. Crude boundaries will be used.\n',...
+    'Layer.m ln. 198 - SpriteKit \n\n' ]);
+
 end
 
 end

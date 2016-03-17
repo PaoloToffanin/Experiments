@@ -13,7 +13,7 @@ function NVA_run
 
     rng('shuffle')
     run('../defineParticipantDetails.m')
-
+%  participant.name = 'pilot';
     pathsToAdd = {'../lib/MatlabCommonTools/'};
     for iPath = 1 : length(pathsToAdd)
         addpath(pathsToAdd{iPath})
@@ -29,31 +29,25 @@ function NVA_run
         error([options.wordsFolder ' does not contain sound files']);
     end
     
-    options.responsesFolder = [options.home '/results/NVA/'];
+    options.responsesFolder = [options.home '/Results/NVA/'];
     if ~exist(options.responsesFolder, 'dir')
         error(['Results folder ' options.responsesFolder ' does not exists']);
     end
     
-    if strcmp(options.subject_name, 'test')
-        options.kidsOrAdults = 'Adult';
-        if ~isempty(dir([options.responsesFolder '*' options.subject_name '*.mat']))
-            delete([options.responsesFolder '*' options.subject_name '*.mat'])
-        end
-        
-%         error('up to here it went ok');
-        warning('Running testing mode')
+    options.recordingsFolder = [options.home '/Results/NVA/Recordings/' participant.name '/'];
+    if ~exist(options.recordingsFolder, 'dir')
+        mkdir(options.recordingsFolder);
     end
-    
-    options.listsFile = ['nvaList' options.kidsOrAdults '.txt'];
+    options.listsFile = ['nvaList' participant.kidsOrAdults '.txt'];
     options.nLists = 2;
     stopNow = false;
     [nvaLists, stopNow] = getListWords(options, stopNow);
     if ~ stopNow
-        interface(nvaLists, options);
+        interface(nvaLists, options, participant);
     end
     checkResults = false;
     if checkResults
-        disp(scoreNVA(options.subject_name))
+        scoreNVA(participant.name)
     end
     
     for iPath = 1 : length(pathsToAdd)
@@ -81,10 +75,6 @@ function [nvaLists, stopNow] = getListWords(options, stopNow)
     choosenLists = randperm(size(lists, 2));
     choosenLists = choosenLists(1 : options.nLists);
     
-%     choosenLists = [1, 5];
-%     warning('list is not random')
-    
-    
     % make word letters displayable and consistent with sound file names.
     for iList = 1 : options.nLists
         listName = ['list_' num2str(choosenLists(iList))];
@@ -110,7 +100,7 @@ function [nvaLists, stopNow] = getListWords(options, stopNow)
         listName = ['list_' num2str(choosenLists(iList))];
         wordsUp = nvaLists.(listName).wordsLists;
         wavFilesWords = dir([options.wordsFolder '*.wav']);
-        % remove noise, it usually the first one
+        % remove noise, it's usually the first one
         wavFilesWords(1) = [];
         for iword = 1 : length(wordsUp)
 %             if sum(~cellfun('isempty', strfind({wavFilesWords.name},
@@ -128,7 +118,7 @@ function [nvaLists, stopNow] = getListWords(options, stopNow)
    
 end
 
-function interface(stimulus, options)
+function interface(stimulus, options, participant)
    
     screen = monitorSize;
     screen.xCenter = round(screen.width / 2);
@@ -143,15 +133,15 @@ function interface(stimulus, options)
     f = figure('Visible','off','Position',[disp.Left, disp.Up, disp.width, disp.heigth], ...
         'Toolbar', 'none', 'Menubar', 'none', 'NumberTitle', 'off');
 
-    %  Construct the bottons.
+    % globals
     list = fieldnames(stimulus);
     iList = 1;
     iStim = 1;
+    continueExp = true;
     
-    % buttonName = ['zero' currentWord 'ALL']; % words
+    %  Construct the bottons.
     phonemesNum = {'first', 'second', 'third'};
     buttonName = {'zero', phonemesNum{:}, 'ALL'}; % words
-    % buttonName = {phonemesNum{:}, 'ALL'}; % words
     nButtons = length(buttonName);
     minBottonWidth = 25;
     nLettersXbutton = cellfun('length', buttonName); % however 2,3,4 are only letters not first, second, third
@@ -160,10 +150,6 @@ function interface(stimulus, options)
     bottonHeight= 80;
     bottonYpos = round(disp.heigth*3/4) - round(bottonHeight / 2);
     for iButton = 1 : nButtons
-%         bottonWidth = minBottonWidth + minBottonWidth * length(buttonName{iButton}); % width botton proportional to number of characters in string
-%         Box.(buttonName{iButton}) = uicontrol('Style','pushbutton','String', buttonName{iButton},...
-%             'Position',[(disp.width * iButton/(nButtons + 1) - round(bottonWidth / 2)), bottonYpos, bottonWidth, bottonHeight],...
-%             'Callback',@keysCallback, 'Visible', 'On', 'FontSize', 20);%, 'enable', 'off');
         Box.(buttonName{iButton}) = uicontrol('Style','pushbutton','String', buttonName{iButton},...
             'Position',[(disp.width * iButton/(nButtons + 1) - round(bottonWidth(iButton) / 2)), ...
                 bottonYpos, bottonWidth(iButton), bottonHeight],...
@@ -174,6 +160,7 @@ function interface(stimulus, options)
     set(Box.ALL, 'BackgroundColor', 'green');
     
     currentWord = strsplit(stimulus.(list{iList}).words2Display{iStim}, '#'); % words
+%     currentWord = {'#','#','#'};
     for phoneme = 1 : length(currentWord)
         Box.(phonemesNum{phoneme}).String = currentWord{phoneme};
     end
@@ -200,26 +187,33 @@ function interface(stimulus, options)
     % Make the GUI visible.
     f.Visible = 'on';
     
+    Fs = 8000;
+    recorder = audiorecorder(Fs,16,1);
+    stopRecording = false;
+    
     ipush = 1;
     repeatedPhonemes = {''};
-    while true
-        if strcmp(options.subject_name, 'test')
+    iResp = 1;
+    responses.NVAstarts = datetime('now', 'InputFormat', 'dd-mmm-yyyy HH:mm:ss');
+    
+    while continueExp
+        if continueExp == false
+            fprintf('Ciao Ciao \n');
+            return
+        end
+        if strcmp(participant.name, 'test')
             keysCallback
         else
             uiwait;
         end
-        if (iStim > length(stimulus.(list{iList}).wordsLists)) && ...
-                (iList == length(list))
-            fprintf('The experiment is finished\n Ciao Ciao \n');
-            return
-        end
     end % while loop all trials
     
+    
     function keysCallback(source, ~)
-        if strcmp(options.subject_name, 'test')
+        
+        if strcmp(participant.name, 'test')
             randPicked = randi([1 length(buttonName)]);
-            repeatedPhonemes = {Box.(buttonName{randPicked}).String};
-            iStim = iStim + 1;
+            repeatedPhonemes{1} = Box.(buttonName{randPicked}).String;
             continueCallback
         else
             repeatedPhonemes{ipush} = source.String;
@@ -240,40 +234,58 @@ function interface(stimulus, options)
             end
             set(Box.continue, 'enable', 'on');
         end % if test subject_name
+        stopRecording = true;
     end % function call
 
     function continueCallback
         
-        %% phonemes have been clicked
+        %% store responses
         if ~isempty(repeatedPhonemes{1})
             
-            filename = [options.responsesFolder 'nva_' options.subject_name '.mat'];
+            filename = [options.responsesFolder 'nva_' participant.name '.mat'];
             if exist(filename,'file') 
-                load(filename) % this will overwrite repeated words
-                if isfield(responses, list{iList})
-                    
-                    responses.(list{iList}).scores{end+1} = repeatedPhonemes;
-                    responses.(list{iList}).word{end+1} = stimulus.(list{iList}).wordsLists(iStim-1);
-                    
-                else % this additional else is to extend the structure
-                    responses.(list{iList}).scores{1} = repeatedPhonemes;
-                    responses.(list{iList}).word{1} = stimulus.(list{iList}).wordsLists(iStim-1);
-                end
+                load(filename)
             else
-                responses.(list{iList}).scores{1} = repeatedPhonemes;
-                responses.(list{iList}).word{1} = stimulus.(list{iList}).wordsLists(iStim-1);
+                responses.listsOrder = {};
             end
+            
+            attempt = 1;
+            if exist('responses', 'var') && isfield(responses, list{iList})
+                attempt = length(responses.(list{iList}));
+                if length(responses.(list{iList})(attempt).scores) == ...
+                        length(stimulus.(list{iList}).wordsLists)
+                    attempt = attempt + 1;
+                end
+            end
+            
+            responses.(list{iList})(attempt).scores{iResp} = repeatedPhonemes;
+            responses.(list{iList})(attempt).word(iResp) = stimulus.(list{iList}).wordsLists(iResp);
+            responses.(list{iList})(attempt).timeFromStart(iResp) = ...
+                datetime('now', 'InputFormat', 'dd-mmm-yyyy HH:mm:ss'); % milliseconds(... - NVAstarts) to extract;
+            if strcmp(repeatedPhonemes, 'ALL')
+                responses.(list{iList})(attempt).phonemes{iResp} = [strsplit(stimulus.(list{iList}).words2Display{iResp}, '#')];
+            else
+                responses.(list{iList})(attempt).phonemes{iResp} = responses.(list{iList})(attempt).scores(iResp);
+            end
+            responses.listsOrder = {responses.listsOrder{:} list{iList}};
+            
             save(filename, 'responses');
+            if stopRecording
+                stop(recorder);
+                y = getaudiodata(recorder);
+                audiowrite([options.recordingsFolder list{iList} '_' ... 
+                    stimulus.(list{iList}).wordsLists{iResp} '.wav'], y, Fs)
+                stopRecording = ~stopRecording;
+            end
+            
+            iResp = iResp + 1;
+            if (iResp > length(stimulus.(list{iList}).wordsLists))
+                iResp = 1;
+            end
      
             % return button status to ON
             for phoneme = 1 : length(repeatedPhonemes)
-%                 tmp = fieldnames(Box);
-%                 for iBotton = 1 : length(tmp)
-%                     if strcmp(Box.(tmp{iBotton}).String, repeatedPhonemes{phoneme})
-%                         set(Box.(tmp{iBotton}),'enable','on');
-%                     end
-%                 end
-                switch repeatedPhonemes{phoneme}
+               switch repeatedPhonemes{phoneme}
                     case Box.zero.String
                         set(Box.zero, 'enable', 'on');
                     case Box.ALL.String
@@ -291,11 +303,12 @@ function interface(stimulus, options)
             
             %% update the button names
             if (iStim > length(stimulus.(list{iList}).wordsLists)) && (iList == length(list))
-                Box.continue.String = 'FINISHED';
-                pause(2);
+                fprintf('finished\n')
+                continueExp = false;
+                uiresume();
                 close(f)
+                return
             else
-                
                 if iStim > length(stimulus.(list{iList}).wordsLists) && (iList + 1) <= length(list)
                     currentWord = strsplit(stimulus.(list{iList+1}).words2Display{1}, '#');
                 else
@@ -307,46 +320,50 @@ function interface(stimulus, options)
                 repeatedPhonemes = {''};
                 ipush = 1;
             end
-        end
-        
-        
-        %% independent of whether phonemes have been clicked or not
-        if iStim > length(stimulus.(list{iList}).wordsLists)
-            if iList == length(list)
-                fprintf('The experiment is finished\n Ciao Ciao \n');
-            else
-                iList = iList + 1;
+            if (iStim > length(stimulus.(list{iList}).wordsLists)) && (iList ~= length(list))
                 iStim = 1;
-                repeatedPhonemes = {''};
-                Box.continue.String = 'START';
+                iList = iList + 1;
             end
-        else
-            Box.continue.String = sprintf('PLAYING = %d', iStim);
-            for iButton = 1 : length(buttonName)
-                set(Box.(buttonName{iButton}), 'enable', 'off');
-            end
-            [y, fs] = audioread([options.wordsFolder stimulus.(list{iList}).wordsLists{iStim} '.wav']);
-            what2play = audioplayer([y(:, 1) y(:, 1)], fs);% make stereo sound
-            playblocking(what2play);
-            if ~strcmp(options.subject_name, 'test')
-                uiresume();
-            else
-                keysCallback
-            end
-            iStim = iStim + 1;
-            Box.continue.String = sprintf('NEXT = %d', iStim);
-            if iStim > length(stimulus.(list{iList}).wordsLists)
-                Box.continue.String = sprintf('NEXT List  %d', iList + 1);
-            end
-            for iButton = 1 : length(buttonName)
-                set(Box.(buttonName{iButton}), 'enable', 'on');
-            end
-            set(Box.continue, 'enable', 'off');
+            
         end
+        
+        
+%% commands independent of whether phonemes have been clicked or not
+        Box.continue.String = sprintf('PLAYING = %d', iStim);
+        for iButton = 1 : length(buttonName)
+            set(Box.(buttonName{iButton}), 'enable', 'off');
+        end
+        [y, fs] = audioread([options.wordsFolder stimulus.(list{iList}).wordsLists{iStim} '.wav']);
+        what2play = audioplayer([y(:, 1) y(:, 1)], fs);% make stereo sound
+%         playblocking(what2play); % otherwise we cannot record
+        play(what2play);
+        
+        if ~strcmp(participant.name, 'test')
+            uiresume();
+            record(recorder)
+        end
+        
+        % this is because we want to asynchronously play and record, but we
+        % need to wait that the sound is played before continuing
+        while what2play.isplaying
+            pause(.1);
+        end
+        
+        set(Box.continue, 'enable', 'off');
+        
+%% update buttons status
+        iStim = iStim + 1;
+        Box.continue.String = 'NEXT';
+        if (iStim > length(stimulus.(list{iList}).wordsLists)) && (iList == length(list))
+            Box.continue.String = sprintf('FINISHED');
+        end
+        for iButton = 1 : length(buttonName)
+            set(Box.(buttonName{iButton}), 'enable', 'on');
+        end
+        if strcmp(participant.name, 'test')
+            pause(.5)
+            keysCallback
+        end
+            
     end % function continueCallback
-
-
-    
-
-end
-
+end % interface

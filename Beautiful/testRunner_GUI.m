@@ -1,6 +1,11 @@
 function testRunner_GUI(participant)
 %% features to add
-% can't think at any at the moment
+% make it impossible for participants to run tasks without following the
+% order of presentation that the experimenter chooses.
+% 1 - shading of buttons resambling the order of the task to choose (enable 
+% disable buttons?) OR:
+% 2 - substituting taskname with task1, task2, so that participants can be
+% independent but are not choosing a random order themselves
 
     %% note paol8 added a clear all on participantDetails, so that the
     % participant structure is renewed every time, might have undesired
@@ -8,7 +13,9 @@ function testRunner_GUI(participant)
 %% implementation
     %  Create and then hide the UI as it is being constructed.
     heigthGUI = 285;
-    f = figure('Visible','off','Position',[360, 500, 450, heigthGUI]);
+    f = figure('Visible','off',...
+        'Position',[360, 500, 450, heigthGUI], ...
+        'Name', 'testRunner');
     
     uicontrol('Style', 'text', 'String', ...
         sprintf('Testing %s', participant.name),...
@@ -21,8 +28,8 @@ function testRunner_GUI(participant)
     for iexp = 1 : length(participant.expButton)
         task(iexp).b = uicontrol('Style', 'pushbutton',...
             'String', participant.expButton{iexp}, ...
-            'Enable', participant.buttonEnabled{iexp}, ...
-            'Position', [220, availableLocs(iexp), 70, 25], ...
+            'Enable', participant.buttonEnabled{iexp}, ... 
+            'Position', [220, availableLocs(length(participant.expButton) + 1 - iexp), 70, 25], ... // starts drawing from the button
             'Callback',{@runTask_Callback});
     end
 

@@ -9,7 +9,8 @@ function emotion_main(subject_name, phase, cue)
         simulateSubj = true;
     end
     
-    paths2Add = {'../lib/SpriteKit', '../lib/MatlabCommonTools/'}; 
+    paths2Add = {'../lib/SpriteKit', ...
+                 '../lib/MatlabCommonTools/'}; 
     for ipath = 1 : length(paths2Add)
         if ~exist(paths2Add{ipath}, 'dir')
             error([paths2Add{ipath} ' does not exists, check the ../']);
@@ -19,7 +20,7 @@ function emotion_main(subject_name, phase, cue)
     end
     
     options.home = getHome;
-    options = emotion_getCue(options, cue);
+    options = emotion_setSndFilesDir(options, cue);
 
     if ~exist(options.soundDir, 'dir')
         error(['Sounds folder ' options.soundDir ' does not exists']);
@@ -181,9 +182,12 @@ function emotion_main(subject_name, phase, cue)
         fprintf('Response time : %d ms\n', round(response.response_time*1000));
         fprintf('Response correct: %d\n\n', response.correct);
 
+        % if file already exists extend the structure
+        if exist(options.res_filename, 'file');
+            load(options.res_filename)
+        end
         response.condition = expe.(phase).condition(itrial);
         results.(phase).(cue).att(attempt).responses(itrial) = response;
-        
         save(options.res_filename, 'options', 'expe', 'results');
         
         if expe.test.condition(itrial).clownladderNmove ~= 0
@@ -224,9 +228,9 @@ function emotion_main(subject_name, phase, cue)
                         pause(0.2)
                     end
                     Drops.State = 'empty';
-                end
-            end
-        end
+                end % if ~ expe.test.condition(itrial).splash
+            end % if (strcmp(phase, 'test'))
+        end % if expe.test.condition(itrial).clownladderNmove ~= 0
         
         if itrial == options.(phase).total_ntrials
             gameCommands.Scale = 2; 
@@ -237,8 +241,10 @@ function emotion_main(subject_name, phase, cue)
         emotionvoices(indexes(toPlay)) = [];
         
     end
-
-    close gcf
+    
+    % it might be that this closes also the GUI for the experimenter
+%     close gcf
+    G.delete
     
     for iPath = 1 : length(paths2Add)
         rmpath(paths2Add{iPath});

@@ -1,12 +1,17 @@
 function [G, Clown, Buttonup, Buttondown, gameCommands, Confetti, Parrot, ...
     Pool, Clownladder, Splash, ladder_jump11, clown_jump11, Drops, ExtraClown] = emotion_game
 
-    fig = get(groot,'CurrentFigure');
-    if ~isempty(fig)
-        close(fig)
+    fig = findobj; %get(groot,'CurrentFigure');
+    for item = 1 : length(fig)
+        if strcmp(class(fig(item)), 'matlab.ui.Figure') && ...
+                ~strcmp(get(fig(item), 'Name'), 'testRunner')
+            close(fig(item))
+                
+        end
+                
     end
     clear fig
-
+    
     [~, screen2] = getScreens();
     fprintf('Experiment will displayed on: [%s]\n', sprintf('%d ',screen2));
 

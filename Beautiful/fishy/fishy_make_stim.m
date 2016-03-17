@@ -167,7 +167,9 @@ function [y, fs] = straight_process(syll, t_f0, ser, options)
 
         y = y/rms(y)*x_rms;
         if max(abs(y))>1
-            warning('Output was renormalized for "%s".', wavOut);
+%             warning('Output was renormalized for "%s".', wavOut); 
+% paol8: this is a tedious warning, clutter screen and not interesting
+            fprintf('Output was renormalized for "%s".\n', wavOut);
             y = 0.98*y/max(abs(y));
         end
 
