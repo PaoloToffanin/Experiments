@@ -470,8 +470,16 @@ function fishy_main(varargin)
             
         else
 %             'controls' is number 8
-            if (locClick(1) >= G.Children{8}.clickL) && (locClick(1) <= G.Children{8}.clickR) && ...
-                    (locClick(2) >= G.Children{8}.clickD) && (locClick(2) <= G.Children{8}.clickU)
+            for controlIndex = 1 : length(G.Children)
+                if strcmp(G.Children{controlIndex}.ID, 'controls')
+                    break;
+                end
+            end
+            
+            if (locClick(1) >= G.Children{controlIndex}.clickL) && ...
+                    (locClick(1) <= G.Children{controlIndex}.clickR) && ...
+                    (locClick(2) >= G.Children{controlIndex}.clickD) && ...
+                    (locClick(2) <= G.Children{controlIndex}.clickU)
                 gameCommands.State = 'empty';
                 bigFish.State = 'fish_1';
                 starting = 1;

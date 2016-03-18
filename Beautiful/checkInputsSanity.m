@@ -8,7 +8,7 @@ function participant = checkInputsSanity(participant, options)
 %         participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
         participant.expDir = [participant.expDir {'fishy', 'emotion'}];
     end
-%     participant.expButton = participant.expDir;
+    participant.expButton = participant.expDir;
     participant.buttonEnabled(1:length(participant.expDir)) = {'on'};
     % check if the study was run before and skip those tasks
     completedExps = [];
@@ -135,6 +135,8 @@ function participant = checkInputsSanity(participant, options)
 %     randomSequence = randperm(length(participant.expName));
 %     participant.expName= participant.expName(randomSequence);
     participant.expDir = participant.expDir(randomSequence);
+    % NVA 
+    
    
     % for the adults there are no repetitions, so it is not important
     if strcmp(participant.kidsOrAdults, 'Kid')
@@ -162,6 +164,5 @@ function participant = checkInputsSanity(participant, options)
         end % while true
     end % if strcmp(participant.kidsOrAdults, 'Kid')
     participant.expDir = {'NVA', participant.expDir{:}};
-
 
 end % end of the function
