@@ -134,8 +134,8 @@ function participant = checkInputsSanity(participant, options)
     randomSequence = randperm(length(participant.expDir) - 1) + 1;% NVA is always first 
 %     randomSequence = randperm(length(participant.expName));
 %     participant.expName= participant.expName(randomSequence);
-    participant.expDir = {'NVA', participant.expDir{randomSequence}};
-
+    participant.expDir = participant.expDir(randomSequence);
+   
     % for the adults there are no repetitions, so it is not important
     if strcmp(participant.kidsOrAdults, 'Kid')
         % check that there are no repetitions between gender and fishy
@@ -161,6 +161,7 @@ function participant = checkInputsSanity(participant, options)
             end
         end % while true
     end % if strcmp(participant.kidsOrAdults, 'Kid')
+    participant.expDir = {'NVA', participant.expDir{:}};
 
 
 end % end of the function
