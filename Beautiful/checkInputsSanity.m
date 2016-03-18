@@ -8,8 +8,8 @@ function participant = checkInputsSanity(participant, options)
 %         participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
         participant.expDir = [participant.expDir {'fishy', 'emotion'}];
     end
-    participant.expButton = participant.expDir;
-    participant.buttonEnabled(1:length(participant.expButton)) = {'on'};
+%     participant.expButton = participant.expDir;
+    participant.buttonEnabled(1:length(participant.expDir)) = {'on'};
     % check if the study was run before and skip those tasks
     completedExps = [];
 %     for iExp = 1 : length(unique(participant.expName))
@@ -116,11 +116,11 @@ function participant = checkInputsSanity(participant, options)
             if strcmp(button, 'OK')
 %                 participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
                 participant.expDir = {'NVA', 'fishy', 'emotion', 'gender'};
-                participant.expButton = participant.expDir;
+%                 participant.expButton = participant.expDir;
                 if strcmp(participant.kidsOrAdults, 'Kid')
-                    participant.expButton = [participant.expButton {'fishy', 'emotion'}];
+                    participant.expDir = [participant.expDir {'fishy', 'emotion'}];
                 end
-                participant.buttonEnabled(1:length(participant.expButton)) = {'on'};
+                participant.buttonEnabled(1:length(participant.expDir)) = {'on'};
             else
                 disp('Change participants name in participantDetails before restarting')
                 return
@@ -136,29 +136,31 @@ function participant = checkInputsSanity(participant, options)
 %     participant.expName= participant.expName(randomSequence);
     participant.expDir = {'NVA', participant.expDir{randomSequence}};
 
-
+    % for the adults there are no repetitions, so it is not important
     if strcmp(participant.kidsOrAdults, 'Kid')
         % check that there are no repetitions between gender and fishy
         % if gender is repeated take fishy and put it in between and the other
         % way around for fishy
-        repeated = {'fishy', 'emotion'};
-        check = true;
-        while check
+        repeated = {'fishy', 'emotion'}; 
+%         participant.expDir(end + 1 : end + 2) = repeated(:);
+        stopSearch = false;
+        while true
             for iExp = 1 : length(repeated)
-                distances = find(strcmp(participant.expDir, repeated(iExp)));
-                check = false;
-                if length(distances) < 2
+                uans = find(strcmp(repeated{iExp}, participant.expDir));
+                if length(uans) > 1 && (uans(2) - uans(1)) < 2
+                    stopSearch = false;
+                    participant.expDir = participant.expDir(randperm(length(participant.expDir)));
                     break
                 end
-                if (distances(2) - distances(1)) == 1
-                    randomSequence = randperm(length(participant.expDir));
-%                     participant.expName= participant.expName(randomSequence);
-                    participant.expDir = participant.expDir(randomSequence);
-                    check = true;
+                if length(uans) > 1 && (uans(2) - uans(1)) >= 2
+                    stopSearch = true;
                 end
+            end % for iExp = 1 : length(repeated)
+            if stopSearch
+                break
             end
-        end
-    end
+        end % while true
+    end % if strcmp(participant.kidsOrAdults, 'Kid')
 
 
 end % end of the function

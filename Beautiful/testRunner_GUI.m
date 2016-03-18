@@ -23,19 +23,19 @@ function testRunner_GUI(participant)
        
     % Construct the components.
     % divide available vertical space among available buttons 
-    availableLocs = linspace(0, heigthGUI, length(participant.expButton) + 2);
+    availableLocs = linspace(0, heigthGUI, length(participant.expDir) + 2);
     availableLocs([1 end]) = [];
-    for iexp = 1 : length(participant.expButton)
+    for iexp = 1 : length(participant.expDir)
         task(iexp).b = uicontrol('Style', 'pushbutton',...
-            'String', participant.expButton{iexp}, ...
+            'String', participant.expDir{iexp}, ...
             'Enable', participant.buttonEnabled{iexp}, ... 
-            'Position', [220, availableLocs(length(participant.expButton) + 1 - iexp), 70, 25], ... // starts drawing from the button
+            'Position', [220, availableLocs(length(participant.expDir) + 1 - iexp), 70, 25], ... // starts drawing from the button
             'Callback',{@runTask_Callback});
     end
 
     % align all components, except the axes, along their centers.
 %     align([task(1:length(participant.expName)).b],'Center','None');         
-    align([task(1:length(participant.expDir)).b],'Center','None');         
+    align([task(1:length(participant.expDir)).b], 'Center', 'None');         
     f.Visible = 'on';
     
     % This Push button callbacks runs the specified experiment
