@@ -87,7 +87,7 @@ function [expe, options] = gender_buildingconditions(options)
     indexes = indexes(randperm(length(indexes)));
     options.test.faces = options.test.faces(indexes);
     
-    options.test.hands = {'handbang_', 'handremote_'}; % + 'handknob_%d';
+    options.test.hands = {'handremote_'}; % + 'handbang_', + 'handknob_%d';
     indexing = repmat ([1:length(options.test.hands)], 1, ...
         length(indexes)/length(options.test.hands));
     indexing = indexing (randperm(length(indexes)));

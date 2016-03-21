@@ -3,11 +3,16 @@ function [G, TVScreen, Buttonup, Buttondown, Speaker, gameCommands, Hands] = gen
     addpath(options.straight_path);
 
     [screen1, screen2] = getScreens();
-    fprintf('Experiment will displayed on: [%s]\n', sprintf('%d ',screen1));
+%     fprintf('Experiment will displayed on: [%s]\n', sprintf('%d ', screen2));
+    fprintf('Experiment will displayed on: [%s]\n', sprintf('%d ', screen2));
 
-    G = SpriteKit.Game.instance('Title','Gender Game', 'Size', [screen2(3)/1.3, screen2(4)/1.2], 'Location', screen2(1:2), 'ShowFPS', false);
+%     G = SpriteKit.Game.instance('Title','Gender Game', 'Size', [screen2(3)/1.3, screen2(4)/1.2], 'Location', screen2(1:2), 'ShowFPS', false);
+    G = SpriteKit.Game.instance('Title','Gender Game', ...
+        'Size', [screen2(3), screen2(4)], 'Location', screen2(1:2), ...
+        'ShowFPS', false);
 
-    SpriteKit.Background('Images/genderbackground3_unscaled.png');
+%     SpriteKit.Background('Images/genderbackground3_unscaled.png');
+    SpriteKit.Background('Images/Naamloos.png');
 
     TVScreen = SpriteKit.Sprite('tvscreen');
     TVScreen.initState('off', ones(1,1,3),true); % whole screen green
@@ -96,11 +101,11 @@ function [G, TVScreen, Buttonup, Buttondown, Speaker, gameCommands, Hands] = gen
     %     Hands
     Hands = SpriteKit.Sprite ('hands');
     Hands.initState ('off', ones (1,1,3), true);
-    for ihandbang = 1:2
-        spritename = sprintf('handbang_%d',ihandbang);
-        pngFile = ['Images/' spritename '.png'];
-        Hands.initState(spritename , pngFile, true);
-    end
+%     for ihandbang = 1:2
+%         spritename = sprintf('handbang_%d',ihandbang);
+%         pngFile = ['Images/' spritename '.png'];
+%         Hands.initState(spritename , pngFile, true);
+%     end
     addprop(Hands, 'locHands');
     Hands.locHands{1}  = [screen2(3)/1.6, screen2(4)/1.4];
     %   for ihandknob = 1:3

@@ -22,13 +22,6 @@ function emotion_main(subject_name, phase, cue)
     options.home = getHome;
     options = emotion_setSndFilesDir(options, cue);
 
-    if ~exist(options.soundDir, 'dir')
-        error(['Sounds folder ' options.soundDir ' does not exists']);
-    end
-    if isempty(dir([options.soundDir '*.wav']))
-        error([options.soundDir ' does not contain sound files']);
-    end
-    
     %% Setup experiment 
     options.result_path = [options.home '/Results/Emotion/'];
     options.result_prefix = 'emo_';
@@ -38,6 +31,15 @@ function emotion_main(subject_name, phase, cue)
     if isempty(attempt) && isempty(expe) && isempty(options) && isempty(results)
         return
     end
+    
+    if ~exist(options.soundDir, 'dir')
+        error(['Sounds folder ' options.soundDir ' does not exists']);
+    end
+    if isempty(dir([options.soundDir '*.wav']))
+        error([options.soundDir ' does not contain sound files']);
+    end
+
+    
     %% Game Stuff 
     [G, Clown, Buttonup, Buttondown, gameCommands, Confetti, Parrot, Pool, ...
         Clownladder, Splash, ladder_jump11, clown_jump11, Drops, ExtraClown] = emotion_game; 

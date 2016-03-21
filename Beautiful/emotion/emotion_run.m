@@ -25,7 +25,6 @@ function emotion_run
             end
         else
             for icue = 1 : length(cue);
-                
                 for iphase = 1 : length(phase)
                     fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{icue})
                     emotion_main(participant.name, phase{iphase}, cue{icue});

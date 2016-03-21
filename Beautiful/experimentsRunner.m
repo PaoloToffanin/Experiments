@@ -1,5 +1,6 @@
 % close all
-options = struct; % initialization
+
+% options = struct; % initialization
 
 %% Participant initialization - returns structures: participant & options
 % [participant, options] = defineParticipantDetails(options);
