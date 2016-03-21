@@ -19,8 +19,8 @@ options = sos_options(participant);
 if ~exist(options.res_foldername, 'dir')
     mkdir(options.res_foldername);
 end
-if ~exist([options.res_foldername options.res_filename], 'file')
-    sos_build_conditions(options);
+if ~exist( 'file')
+    expe_build_conditions(options);
     % let's get rid of this, it's alwasy inconvenient
 % else
 %     opt = char(questdlg(sprintf('Found "%s". Use this data?', options.res_foldername),'SOS','OK','Cancel','OK'));

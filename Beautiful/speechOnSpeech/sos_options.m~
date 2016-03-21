@@ -60,7 +60,7 @@ if ~exist(options.tmp_path, 'dir')
     mkdir(options.tmp_path);
 end
 
-options.sentences_file = '~/sounds/VU_zinnen/VU_corpus_definition.txt';
+options.sentences_file = '~/sounds/VU_zinnen/00 VU_lijst_woorden.txt';
 if ~exist(options.sentences_file, 'file')
     error('%s file with the sentences does not exist', options.sentences_file);
 end
