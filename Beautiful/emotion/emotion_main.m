@@ -228,7 +228,7 @@ function emotion_main(subject_name, phase, cue)
                     ladder_jump11.State = 'empty';
                     clown_jump11.State = 'empty';
                     ExtraClown.State = 'empty';
-                    Clownladder.State = 'ground';
+                    Clownladder.State = 'empty';
                     ladderStep = 1;
                     for idrop = 1:2
                         Drops.State = sprintf('sssplashdrops_%d', idrop);

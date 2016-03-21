@@ -2,8 +2,7 @@
 % todo list: needs to be implemented differently if we want to use
 % guiParticipantDetails.m
 
-    % options.subject_name = 'Jacquelien';
-    % options.subject_name = 'paolo';
+    participant.name = 'Jacquelien';
     participant.name = 'test';
 %     participant.age = 24;
     participant.age = 8;
