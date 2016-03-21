@@ -5,8 +5,8 @@
     % options.subject_name = 'Jacquelien';
     % options.subject_name = 'paolo';
     participant.name = 'test';
-    participant.age = 24;
-    %participant.age = 8;
+%     participant.age = 24;
+    participant.age = 8;
     participant.sex = 'f';
     participant.language = 'Dutch'; % English or Dutch
     participant.kidsOrAdults = 'Kid'; % we leave empty for kids because I am not sure whether we'd fuck up some file names/if statements

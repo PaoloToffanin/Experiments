@@ -15,23 +15,17 @@ function gender_main(expe, options, phase)
         G.onMouseRelease = @buttondownfcn;
         G.onKeyPress = @keypressfcn;
     else
-        opt = char(questdlg(sprintf('%s phase COMPLETE. Run again?', phase),['Re-run ' phase],'Yes','No','Yes'));
-        switch opt
-            case 'Yes'
-                if ~strcmp(options.subject_name, 'tryout');
-                    resultsFiles = dir([options.result_path '/*.mat']);
-                    nRep = length(resultsFiles) - sum(cellfun('isempty', regexp({resultsFiles.name}, options.subject_name)));
-                    nRep = nRep + 1;
-                    options.subject_name  = sprintf('%s%s_%02.0f.mat', options.result_prefix, options.subject_name, nRep);
-                    options.res_filename = fullfile(options.result_path, options.subject_name);
-                    [G, TVScreen, Buttonup, Buttondown, Speaker, gameCommands, Hands] = gender_game(options);
-                    G.onMouseRelease = @buttondownfcn;
-                    G.onKeyPress = @keypressfcn;
-                end
-                [expe, options] = gender_buildingconditions(options);
-            case 'No'
-                return
+        if ~strcmp(options.subject_name, 'test');
+            resultsFiles = dir([options.result_path '/*.mat']);
+            nRep = length(resultsFiles) - sum(cellfun('isempty', regexp({resultsFiles.name}, options.subject_name)));
+            nRep = nRep + 1;
+            options.subject_name  = sprintf('%s%s_%02.0f.mat', options.result_prefix, options.subject_name, nRep);
+            options.res_filename = fullfile(options.result_path, options.subject_name);
+            [G, TVScreen, Buttonup, Buttondown, Speaker, gameCommands, Hands] = gender_game(options);
+            G.onMouseRelease = @buttondownfcn;
+            G.onKeyPress = @keypressfcn;
         end
+        [expe, options] = gender_buildingconditions(options);
     end
 
 %=============================================================== MAIN LOOP
