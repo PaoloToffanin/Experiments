@@ -8,6 +8,9 @@ function options = gender_options(options)
         options.home = getHome;
     end
     
+    volume = SoundVolume(.42);
+
+    
     [~, name] = system('hostname');
 %     options.result_path   = [options.home '/results/Gender'];
     options.result_path   = [options.home '/Results/Gender'];

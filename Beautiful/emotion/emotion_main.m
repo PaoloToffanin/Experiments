@@ -38,7 +38,12 @@ function emotion_main(subject_name, phase, cue)
     if isempty(dir([options.soundDir '*.wav']))
         error([options.soundDir ' does not contain sound files']);
     end
-
+    
+    volume = SoundVolume(.4);
+    if strcmp(cue, 'intact')
+        volume = SoundVolume(.59);
+    end
+    fprintf('stimuli displayed at %f of the volume', volume);
     
     %% Game Stuff 
     [G, Clown, Buttonup, Buttondown, gameCommands, Confetti, Parrot, Pool, ...

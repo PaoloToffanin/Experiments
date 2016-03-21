@@ -20,6 +20,7 @@ function NVA_run
     end
     
     options.home = getHome;
+    volume = SoundVolume(.32);
     
     options.wordsFolder = [options.home '/sounds/NVA/individualWords/'];
     if ~exist(options.wordsFolder, 'dir')

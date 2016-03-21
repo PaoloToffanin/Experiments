@@ -41,6 +41,9 @@ function fishy_main(varargin)
         end
     end
     clear tmp
+    
+    volume = SoundVolume(.42);
+
 
     starting = 1;
     simulate = strcmp(options.subject_name, 'test');
