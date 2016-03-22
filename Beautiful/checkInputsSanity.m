@@ -161,6 +161,9 @@ function participant = checkInputsSanity(participant, options)
                 if length(uans) > 1 && (uans(2) - uans(1)) >= 2
                     stopSearch = true;
                 end
+                if length(uans) == 1
+                    stopSearch = true;
+                end
             end % for iExp = 1 : length(repeated)
             if stopSearch
                 break

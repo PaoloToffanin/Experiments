@@ -43,7 +43,7 @@ function emotion_main(subject_name, phase, cue)
     if strcmp(cue, 'intact')
         volume = SoundVolume(.59);
     end
-    fprintf('stimuli displayed at %f of the volume', volume);
+    fprintf('stimuli displayed at %f of the volume\n', volume);
     
     %% Game Stuff 
     [G, Clown, Buttonup, Buttondown, gameCommands, Confetti, Parrot, Pool, ...
@@ -194,7 +194,11 @@ function emotion_main(subject_name, phase, cue)
             load(options.res_filename)
         end
         response.condition = expe.(phase).condition(itrial);
-        results.(phase).(cue).att(attempt).responses(itrial) = response;
+        if strcmp(phase, 'test')
+            results.(phase).(cue).att(attempt).responses(itrial) = response;
+        else
+            results.(phase).(cue).att(attempt).responses(itrial) = response;
+        end
         save(options.res_filename, 'options', 'expe', 'results');
         
         if expe.test.condition(itrial).clownladderNmove ~= 0

@@ -29,11 +29,13 @@ function [attempt, expe, options, results, cue] = emotion_checkOptions(options, 
                         if length(fieldnames(results.(previousPhases{indexPhase}))) == 1
                             cue = {'normalized', 'intact'}; % overwrite cue to assign the other cue
                             cue(strcmp(cue, cue{indexCue})) = [];
+                            cue = cue{:}; % to be assigned to the structure it has to be character!
 %                             options = emotion_getCue(cue, options);
                             [expe, options] = building_conditions(options);
                             % results remains the same, should be updated
                             % during the task
                         else
+                            % we now just add another attempt
                         % B: ask whether a new attempt should be added 
 %                             choice = questdlg(sprintf([[options.subject_name ' already completed ' phase ' ' cue '\n'], ...
 %                                 'Would you like to repeat it?']), ...
