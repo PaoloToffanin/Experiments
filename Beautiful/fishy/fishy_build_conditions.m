@@ -13,7 +13,7 @@ options.instructions.test = options.instructions.training;
 options.fs = 44100;
 
 %     options.attenuation_dB = 3;  % General attenuation
-    options.attenuation_dB = 27; % General attenuation
+    options.attenuation_dB = 17; % General attenuation
 if options.Bert
     options.attenuation_dB = 3; 
 end

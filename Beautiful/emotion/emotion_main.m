@@ -39,10 +39,10 @@ function emotion_main(subject_name, phase, cue)
         error([options.soundDir ' does not contain sound files']);
     end
     
-    volume = SoundVolume(.4);
-    if strcmp(cue, 'intact')
-        volume = SoundVolume(.59);
-    end
+    volume = SoundVolume(.44);
+%     if strcmp(cue, 'intact')
+%         volume = SoundVolume(.59);
+%     end
     fprintf('stimuli displayed at %f of the volume\n', volume);
     
     %% Game Stuff 
@@ -232,7 +232,7 @@ function emotion_main(subject_name, phase, cue)
                     ladder_jump11.State = 'empty';
                     clown_jump11.State = 'empty';
                     ExtraClown.State = 'empty';
-                    Clownladder.State = 'empty';
+                    Clownladder.State = 'ground';
                     ladderStep = 1;
                     for idrop = 1:2
                         Drops.State = sprintf('sssplashdrops_%d', idrop);
@@ -244,6 +244,7 @@ function emotion_main(subject_name, phase, cue)
         end % if expe.test.condition(itrial).clownladderNmove ~= 0
         
         if itrial == options.(phase).total_ntrials
+            Clownladder.State = 'end';
             gameCommands.Scale = 2; 
             gameCommands.State = 'finish';
          end

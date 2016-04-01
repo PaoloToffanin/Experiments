@@ -132,8 +132,10 @@ function participant = checkInputsSanity(participant, options)
     rng('shuffle');
     if any(strcmp(participant.expDir, 'NVA'))
         randomSequence = randperm(length(participant.expDir) - 1) + 1;
+        addNVA = true;
     else
         randomSequence = randperm(length(participant.expDir));
+        addNVA = false;
     end% NVA is
 %     always first, but if it has already been performed it should not be in there 
 %     randomSequence = randperm(length(participant.expName));
@@ -170,11 +172,13 @@ function participant = checkInputsSanity(participant, options)
             end
         end % while true
     end % if strcmp(participant.kidsOrAdults, 'Kid')
-    if any(strcmp(participant.expDir, 'NVA'))
+    if addNVA
         participant.expDir = {'NVA', participant.expDir{:}};
     end
-
-    % set the order of the buttons name to be identical to expDir, enabled
+ %REMOVE LATER IS JUST FOR TESTING   
+ participant.expDir = {'gender','NVA', 'fishy', 'emotion'};
+    
+ % set the order of the buttons name to be identical to expDir, enabled
     % them too
 %     participant.expButton = participant.expButton(randomSequence);
 end % end of the function

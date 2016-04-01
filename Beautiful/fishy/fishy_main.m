@@ -43,6 +43,7 @@ function fishy_main(varargin)
     clear tmp
     
     volume = SoundVolume(.42);
+    fprintf('stimuli displayed at %f of the volume\n', volume);
 
 
     starting = 1;

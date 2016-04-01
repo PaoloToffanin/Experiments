@@ -103,12 +103,13 @@ function volume = SoundVolume(volume)
         end
         
         % Get or set the volume value according to the user request
-        oldValue = ctrl.getValue;
-        if nargin
+%         oldValue = ctrl.getValue;
+%         if nargin
             ctrl.setValue(volume);
-        end
-        if nargout
-            volume = oldValue;
-        end
+%         end
+%         if nargout
+%             volume = oldValue;
+%         end
+        volume = ctrl.getValue;
     end
 end  % SoundVolume

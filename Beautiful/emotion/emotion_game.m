@@ -199,7 +199,7 @@ function [G, Clown, Buttonup, Buttondown, gameCommands, Confetti, Parrot, ...
     %%  Clownladder 
     Clownladder = SpriteKit.Sprite ('clownladder');
     Clownladder.initState ('empty', ones(1,1,3), true);
-    Clownladder.initState ('ground', 'Images/clownladder_0a.png', true)
+    Clownladder.initState ('ground', 'Images/clownladder_0a.png', true);
     Clownladder.State = 'empty';
     Clownladder.Location = [screen2(3)/1.26, screen2(4)/1.40];% screen2(3)/1.26 for sony 1.28 for maclaptop
     Clownladder.Depth = 5;
@@ -211,6 +211,7 @@ function [G, Clown, Buttonup, Buttondown, gameCommands, Confetti, Parrot, ...
             Clownladder.initState(spritename, pngFile, true);
         end
     end
+    Clownladder.initState ('end', 'Images/clownladder_jump_12.png', true);
     for ijump = 1:11
         spritename = sprintf('clownladder_jump_%d',ijump);
         pngFile = ['Images/' spritename '.png'];
