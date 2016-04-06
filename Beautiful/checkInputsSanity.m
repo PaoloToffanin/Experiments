@@ -3,7 +3,10 @@ function participant = checkInputsSanity(participant, options)
 
     %% initialization variables for EXPERIMENT RUNNER GUI
 %     participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
-    participant.expDir = {'NVA', 'fishy', 'emotion', 'gender'};
+    participant.expDir = {'fishy', 'emotion', 'gender'};
+    if strcmp(participant.language , 'Dutch')
+        participant.expDir = [{'NVA'} participant.expDir];
+    end
     if strcmp(participant.kidsOrAdults, 'Kid')
 %         participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
         participant.expDir = [participant.expDir {'fishy', 'emotion'}];

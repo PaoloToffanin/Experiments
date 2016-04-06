@@ -7,7 +7,7 @@
 %     participant.age = 24;
     participant.age = 7;
     participant.sex = 'f';
-    participant.language = 'Dutch'; % English or Dutch
+    participant.language = 'English'; % English or Dutch
     participant.kidsOrAdults = 'Kid'; % we leave empty for kids because I am not sure whether we'd fuck up some file names/if statements
     if participant.age > 18
         participant.kidsOrAdults = 'Adult';
