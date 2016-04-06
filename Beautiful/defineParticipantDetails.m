@@ -2,11 +2,9 @@
 % todo list: needs to be implemented differently if we want to use
 % guiParticipantDetails.m
 
-    participant.name = 'test';
-%    participant.name = 'PKS99Copy33';
-%     participant.age = 24;
-    participant.age = 7;
-    participant.sex = 'f';
+    participant.name = 'paolo';
+    participant.age = 37;
+    participant.sex = 'm';
     participant.language = 'Dutch'; % English or Dutch
     participant.kidsOrAdults = 'Kid'; % we leave empty for kids because I am not sure whether we'd fuck up some file names/if statements
     if participant.age > 18
