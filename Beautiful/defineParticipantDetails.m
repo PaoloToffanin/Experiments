@@ -3,7 +3,7 @@
 % guiParticipantDetails.m
 
     participant.name = 'test';
-%    participant.name = 'PKS33';
+%    participant.name = 'PKS99Copy33';
 %     participant.age = 24;
     participant.age = 7;
     participant.sex = 'f';

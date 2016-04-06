@@ -179,7 +179,7 @@ function participant = checkInputsSanity(participant, options)
         participant.expDir = {'NVA', participant.expDir{:}};
     end
  %REMOVE LATER IS JUST FOR TESTING   
-% participant.expDir = {'gender','NVA', 'fishy', 'emotion'};
+%     participant.expDir = {'emotion'};
     
  % set the order of the buttons name to be identical to expDir, enabled
     % them too
