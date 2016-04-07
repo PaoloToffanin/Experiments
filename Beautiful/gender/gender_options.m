@@ -8,7 +8,8 @@ function options = gender_options(options)
         options.home = getHome;
     end
     
-    volume = SoundVolume(.42);
+%     volume = SoundVolume(.42);
+    volume = SoundVolume(.36);
 
     
     [~, name] = system('hostname');

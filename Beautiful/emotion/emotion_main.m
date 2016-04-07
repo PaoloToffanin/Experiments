@@ -44,6 +44,7 @@ function emotion_main(subject_name, phase, cue)
     end
     
     volume = SoundVolume(.44);
+    volume = SoundVolume(.36);
 %     if strcmp(cue, 'intact')
 %         volume = SoundVolume(.59);
 %     end
