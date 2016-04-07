@@ -1,5 +1,5 @@
 participant.name = 'test';
-participant.age = 12;
+participant.age = 24;
 participant.sex = 'm';
 participant.language = 'English'; % English or Dutch
 participant.kidsOrAdults = 'Kid';

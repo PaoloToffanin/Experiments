@@ -53,7 +53,8 @@ function participant = checkInputsSanity(participant, options)
                             completedExps = [completedExps iExp];
                     end
                 case 'gender'
-                    if isfield(tmp, 'results') && length([tmp.results.test.responses.trial]) == tmp.options.test.total_ntrials
+                    if 
+                    if length([tmp.results.test.responses.trial]) == tmp.options.test.total_ntrials
                         completedExps = [completedExps iExp];
                     end
             end
