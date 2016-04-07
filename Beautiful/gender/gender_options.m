@@ -14,6 +14,9 @@ function options = gender_options(options)
     [~, name] = system('hostname');
 %     options.result_path   = [options.home '/results/Gender'];
     options.result_path   = [options.home '/Results/Gender'];
+    if ~exist(options.result_path, 'dir')
+        mkdir(options.result_path);
+    end
     options.sound_path = [options.home '/sounds/NVA/Dutch_equalized'];
     if options.Bert
         options.tmp_path   = [options.home '/sounds/NVA/gender/processed/Bert'];

@@ -24,6 +24,10 @@ function emotion_main(subject_name, phase, cue)
 
     %% Setup experiment 
     options.result_path = [options.home '/Results/Emotion/'];
+    if ~exist(options.result_path, 'dir')
+        mkdir(options.result_path);
+    end
+
     options.result_prefix = 'emo_';
     options.res_filename = [options.result_path, sprintf('%s%s.mat', options.result_prefix, options.subject_name)];
     
