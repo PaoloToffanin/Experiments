@@ -27,7 +27,9 @@ function [G, TVScreen, Buttonup, Buttondown, Speaker, gameCommands, Hands] = gen
         pngFile = ['Images/' spritename '.png'];
         TVScreen.initState (spritename, pngFile, true);
     end
-    TVScreen.Location = [screen2(3)/2.58, screen2(4)/2.15];
+%     TVScreen.Location = [screen2(3)/2.58, screen2(4)/2.15]; % KNO
+%     groningen
+    TVScreen.Location = [screen2(3)/2.42, screen2(4)/2.02]; % Debi's
     TVScreen.State = 'off';
     %  TVScreen.Scale = 1.2
     %  ratioscreentvscreen = 0.81 * screen2(3);
@@ -40,6 +42,7 @@ function [G, TVScreen, Buttonup, Buttondown, Speaker, gameCommands, Hands] = gen
     Speaker.initState ('TVSpeaker_1', ['Images/' 'TVSpeaker_1' '.png'], true);
     Speaker.initState ('TVSpeaker_2', ['Images/' 'TVSpeaker_2' '.png'], true);
     Speaker.Location = [screen2(3)/2.06, screen2(4)/2.47];
+    Speaker.Location = [screen2(3)/1.92, screen2(4)/2.34];
     Speaker.State = 'TVSpeaker_1';
     
     Buttonup = SpriteKit.Sprite ('buttonup');
@@ -81,7 +84,8 @@ function [G, TVScreen, Buttonup, Buttondown, Speaker, gameCommands, Hands] = gen
     gameCommands = SpriteKit.Sprite('controls');
     initState(gameCommands, 'begin','Images/start.png' , true);
     initState(gameCommands, 'finish','Images/finish.png' , true);
-    initState(gameCommands, 'empty', ones(1,1,3), true); % to replace the images, 'none' will give an annoying warning
+    initState(gameCommands, 'empty', ones(1,1,3), true); % to replace the images, 
+    % 'none' will give an annoying warning
     gameCommands.State = 'begin';
     gameCommands.Location = [screen2(3)/2.5, screen2(4)/2.5];
     gameCommands.Scale = 1; % make it bigger to cover fishy

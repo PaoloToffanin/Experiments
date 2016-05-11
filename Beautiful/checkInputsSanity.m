@@ -3,7 +3,10 @@ function participant = checkInputsSanity(participant, options)
 
     %% initialization variables for EXPERIMENT RUNNER GUI
 %     participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
-    participant.expDir = {'NVA', 'fishy', 'emotion', 'gender'};
+    participant.expDir = {'fishy', 'emotion', 'gender'};
+    if strcmp(participant.language , 'Dutch')
+        participant.expDir = [{'NVA'} participant.expDir];
+    end
     if strcmp(participant.kidsOrAdults, 'Kid')
 %         participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
         participant.expDir = [participant.expDir {'fishy', 'emotion'}];
@@ -50,7 +53,7 @@ function participant = checkInputsSanity(participant, options)
                             completedExps = [completedExps iExp];
                     end
                 case 'gender'
-                    if length([tmp.results.test.responses.trial]) == tmp.options.test.total_ntrials
+                    if isfield(tmp, 'results') && length([tmp.results.test.responses.trial]) == tmp.options.test.total_ntrials
                         completedExps = [completedExps iExp];
                     end
             end
@@ -176,7 +179,7 @@ function participant = checkInputsSanity(participant, options)
         participant.expDir = {'NVA', participant.expDir{:}};
     end
  %REMOVE LATER IS JUST FOR TESTING   
- participant.expDir = {'gender','NVA', 'fishy', 'emotion'};
+     participant.expDir = {'gender'};
     
  % set the order of the buttons name to be identical to expDir, enabled
     % them too

@@ -14,28 +14,29 @@ function emotion_run
     % input is checked with emotion_checkOptions, which is called in line:
     % 45 of emotion_main
     
-    if strcmp(participant.kidsOrAdults, 'Adult')
-        if strcmp(participant.name, 'test')
-            cue = cue(randperm(length(cue)));
-            for icue = 1 : length(cue);
-                for iphase = 1 : length(phase)
-                    fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{icue})
-                    emotion_main(participant.name, phase{iphase}, cue{icue});
-                end
-            end
-        else
-            for icue = 1 : length(cue);
-                for iphase = 1 : length(phase)
-                    fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{icue})
-                    emotion_main(participant.name, phase{iphase}, cue{icue});
-                end
+    if strcmp(participant.name, 'test')
+        for icue = 1 : length(cue);
+            for iphase = 1 : length(phase)
+                fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{icue})
+                emotion_main(participant.name, phase{iphase}, cue{icue});
             end
         end
     else
-        for iphase = 1 : length(phase)
-            fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{1})
-            emotion_main(participant.name, phase{iphase}, cue{1});
+        switch participant.kidsOrAdults
+            case 'Adult'
+                for icue = 1 : length(cue);
+                    for iphase = 1 : length(phase)
+                        fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{icue})
+                        emotion_main(participant.name, phase{iphase}, cue{icue});
+                    end
+                end
+            case 'Kid'
+                for iphase = 1 : length(phase)
+                    fprintf('I am running %s %s %s\n', participant.name, phase{iphase}, cue{1})
+                    emotion_main(participant.name, phase{iphase}, cue{1});
+                end
         end
     end
+    
     
 end % end of the function emotion_run

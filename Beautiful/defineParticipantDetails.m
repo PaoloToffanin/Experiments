@@ -1,7 +1,5 @@
-% function [participant, options] = defineParticipantDetails(options)
-% todo list: needs to be implemented differently if we want to use
-% guiParticipantDetails.m
 
+<<<<<<< HEAD
 %     participant.name = 'Hellooo';
     participant.name = 'paolo';
 %     participant.age = 24;
@@ -40,5 +38,21 @@
 %     options.Bert = false; % true to run experiments with Bert options
 % 	save([options.home '/Results/' participant.name '.mat'], '-struct', 'participant');
 %     rmpath('lib/MatlabCommonTools/');
+=======
 
-% end
+>>>>>>> d3d669344a93caabb3980f44cf5ae9bc169f3361
+
+
+participant.name = 'test';
+participant.age = 24;
+participant.sex = 'm';
+participant.language = 'English'; % English or Dutch
+participant.kidsOrAdults = 'Kid';
+if participant.age > 18
+    participant.kidsOrAdults = 'Adult';
+end
+
+% % this is debi's computer
+% [~, name] = system('hostname');
+% 'DESKTOP-ETB98NQ' 
+

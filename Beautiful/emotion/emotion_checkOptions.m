@@ -10,15 +10,15 @@ function [attempt, expe, options, results, cue] = emotion_checkOptions(options, 
         % check if the structure should be extended
         if exist('results', 'var')
             previousPhases = fieldnames(results);
-            % check if the previous phases were completed and then extend them,
-            % otherwise leave as is, attempt is 1 by default, will be updated
-            % otherwise
-            if any(~ cellfun('isempty', strfind(previousPhases, phase)))
+            % if the previous phases were completed then extend them,
+            % otherwise leave as is. 
+            % Attempt is 1 by default, will be updated otherwise
+            if any(strcmp(previousPhases, phase))
                 % check whether the cue condition was already completed
-                indexPhase = ~ cellfun('isempty', strfind(previousPhases, phase));
+                indexPhase = strcmp(previousPhases, phase);
                 previousCues = fieldnames(results.(previousPhases{indexPhase}));
-                if any(~ cellfun('isempty', strfind(previousCues, cue)))
-                    indexCue = ~ cellfun('isempty', strfind(previousCues, cue));
+                if any(strcmp(previousCues, cue))
+                    indexCue = strcmp(previousCues, cue);
                     % check whether the last attempt was completed 
                     % successfully (e.g. all trials were completed) ;
                     nAttempts = length(results.(previousPhases{indexPhase}).(previousCues{indexCue}).att);
@@ -28,7 +28,7 @@ function [attempt, expe, options, results, cue] = emotion_checkOptions(options, 
                         % A: switch to the other cue if not completed 
                         if length(fieldnames(results.(previousPhases{indexPhase}))) == 1
                             cue = {'normalized', 'intact'}; % overwrite cue to assign the other cue
-                            cue(strcmp(cue, cue{indexCue})) = [];
+                            cue(~strcmp(cue, cue{indexCue})) = [];
                             cue = cue{:}; % to be assigned to the structure it has to be character!
 %                             options = emotion_getCue(cue, options);
                             [expe, options] = building_conditions(options);

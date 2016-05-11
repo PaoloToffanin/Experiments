@@ -42,7 +42,8 @@ function fishy_main(varargin)
     end
     clear tmp
     
-    volume = SoundVolume(.42);
+%     volume = SoundVolume(.42);
+    volume = SoundVolume(.34);
     fprintf('stimuli displayed at %f of the volume\n', volume);
 
 

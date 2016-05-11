@@ -1,12 +1,6 @@
 function [x, fs] = gender_make_stim(options, trial)
 
 
-%--------------------------------------------------------------------------
-% Etienne Gaudrain <etienne.gaudrain@mrc-cbu.cam.ac.uk>
-% 2010-03-16, 2011-10-20
-% Medical Research Council, Cognition and Brain Sciences Unit, UK
-%--------------------------------------------------------------------------
-
     warning('off', 'MATLAB:interp1:NaNinY');
 
     x = [];
