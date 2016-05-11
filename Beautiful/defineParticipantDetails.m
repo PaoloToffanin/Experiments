@@ -2,7 +2,8 @@
 % todo list: needs to be implemented differently if we want to use
 % guiParticipantDetails.m
 
-    participant.name = 'Hellooo';
+%     participant.name = 'Hellooo';
+    participant.name = 'paolo';
 %     participant.age = 24;
     participant.age = 55;
     participant.sex = 'f';
@@ -12,6 +13,9 @@
         participant.kidsOrAdults = 'Adult';
     end
 
+    participant.sentencesCourpus = 'VU_zinnen';
+%     participant.sentencesCourpus = 'plomp';
+%     
     % update participant's values
 %     participant = guiParticipantDetails(participant);
     

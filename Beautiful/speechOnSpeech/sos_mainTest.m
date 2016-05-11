@@ -1,6 +1,6 @@
 % N: function sos_main(options, session)
 % PT: replaced session with phase since session was not used very often
-function sos_main(options, phase)
+function sos_mainTest(options, phase)
 
 % sos_run
 
@@ -61,8 +61,9 @@ function sos_main(options, phase)
 %     switch session 
 %         case 1
 %             phase = 'training';
-            total_trials = length(expe.(phase).trial);
-%             total_trials = 5;
+
+%             total_trials = length(expe.(phase).trial);
+            total_trials = 5;
 %         case 2
 %             phase = 'test';
 %             total_trials = length(expe.(phase).trial);
@@ -98,14 +99,14 @@ function sos_main(options, phase)
     
     prev_voc = 0;
 
-    while mean([expe.(phase).trial.done]) ~= 1  % Keep going while there are some conditions in this session left to do
-    
-%     for itrial = 1 : total_trials % length(expe.(phase).trial)
+%     while mean([expe.(phase).trial(itrial).done]) ~= 1  % Keep going while there are some conditions in this session left to do
+    for itrial = 1 : total_trials % length(expe.(phase).trial)
         
 % N:        timestamp = datestr(now); % PT: added directly to structure
         % Find first condition not done
 % % PT: i_condition replaced by itrial 
-        itrial = find([expe.(phase).trial.done] == 0, 1);
+%         i_condition = find([expe.(phase).conditions.done] == 0 & ...
+%             [expe.(phase).conditions.session] == session, 1);
 %         itrial = itrial + 1; but the number of trials is already
 %         predefined!!!
 %         fprintf('\n============================ Testing condition %d / %d ==========\n', ...
@@ -224,6 +225,11 @@ function sos_main(options, phase)
         [target, masker, sentence, fs] = sos_make_stim(options, condition, phase, itrial);
         xOut = (target+masker)*10^(-options.attenuation_dB/20);
 
+        figure
+        plot((1:length(target))/fs, target, '-b', (1:length(masker))/fs,masker,'-r')
+        plot((1:length(masker))/fs,masker,'-r', (1:length(target))/fs, target, '-b')
+%         ax = gca;
+% ax.XTick 
         %Vocode as necessary:
 % N        if condition.vocoder > 0
         if ~isnan(condition.vocoder)
@@ -284,7 +290,7 @@ function sos_main(options, phase)
 
         %mark that this trial is done.
 % N:        expe.test.conditions(i_condition).done = 1;
-        expe.(phase).trial(itrial).done = 1;
+        expe.test.conditions(itrial).done = 1;
         close(g.f);
         
         if isfield(condition, 'vocoder')

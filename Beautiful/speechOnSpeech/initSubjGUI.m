@@ -43,10 +43,12 @@ function h = initSubjGUI
         'HorizontalAlignment', 'center', 'FontSize', fntsze);
     
     % Progress bar
-    h.waitbar = axes('Units', 'pixel', 'Position', [width/2-300, height/2+150, 600, 25], 'Box', 'off', ...%height-50
-        'XColor', 'w', 'YColor', 'w', 'XTick', [], 'YTick', []);
-    h.waitbar_legend = uicontrol('Style', 'text', 'Units', 'pixel', 'Position', [width/2-300, height/2+200, 600, 50], ...%height-101
-        'HorizontalAlignment', 'center', 'FontSize', fntsze, 'ForegroundColor', h.main_text_color, 'BackgroundColor', h.background_color);
+    h.waitbar = axes('Units', 'pixel', 'Position', [width/2-300, height/2+150, 600, 25], ...
+        'Box', 'off', 'XColor', 'w', 'YColor', 'w', 'XTick', [], 'YTick', []);
+    h.waitbar_legend = uicontrol('Style', 'text', 'Units', 'pixel', ...
+        'Position', [width/2-300, height/2+200, 600, 50], ...%height-101
+        'HorizontalAlignment', 'center', 'FontSize', fntsze, ...
+        'ForegroundColor', h.main_text_color, 'BackgroundColor', h.background_color);
     
      % Assign the a name to appear in the window title.
     h.f.Name = 'Speech on speech task';
@@ -85,12 +87,15 @@ function h = initSubjGUI
 
         if n>0
             set(h.waitbar_legend, 'String', sprintf('%s: %d/%d', t, i, n));
-            fill([0 1 1 0] * i/n, [0 0 1 1], h.progress_bar_color, 'Parent', h.waitbar, 'EdgeColor', 'none');
+            fill([0 1 1 0] * i/n, [0 0 1 1], h.progress_bar_color, 'Parent', ...
+                h.waitbar, 'EdgeColor', 'none');
         else
             set(h.waitbar_legend, 'String', t);
-            fill([0 1 1 0] * 0, [0 0 1 1], h.progress_bar_color, 'Parent', h.waitbar, 'EdgeColor', 'none');
+            fill([0 1 1 0] * 0, [0 0 1 1], h.progress_bar_color, 'Parent', ...
+                h.waitbar, 'EdgeColor', 'none');
         end
-        set(h.waitbar, 'XColor', 'w', 'YColor', 'w', 'XTick', [], 'YTick', [], 'Xlim', [0 1], 'YLim', [0 1]);
+        set(h.waitbar, 'XColor', 'w', 'YColor', 'w', 'XTick', [], ...
+            'YTick', [], 'Xlim', [0 1], 'YLim', [0 1]);
     end
 
 end

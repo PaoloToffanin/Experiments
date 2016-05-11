@@ -9,17 +9,22 @@ function sos_run
 % example: 
 % expe_run('1', '1')
 
+close all
+
 rng('shuffle')
 run('../defineParticipantDetails.m')
 
-options = sos_options(participant);
+
+options = sos_defineDirectories(participant);
+options = sos_stimuliOptions(options);
+options = sos_instructions(options, participant.language);
+if ~isfield(options, 'instructions')
+    return
+end
 
 %-------------------------------------------------
 
-if ~exist(options.res_foldername, 'dir')
-    mkdir(options.res_foldername);
-end
-if ~exist([options.res_foldername options.res_filename], 'file')
+% if ~exist([options.res_foldername options.res_filename], 'file')
     sos_build_conditions(options);
     % let's get rid of this, it's alwasy inconvenient
 % else
@@ -27,15 +32,16 @@ if ~exist([options.res_foldername options.res_filename], 'file')
 %     if strcmpi(opt, 'Cancel')
 %         return
 %     end
-end
+% end
 
-session = 1; % what do we need the session for?
-
-sos_main(options, session);
-
+% N: session = 1; % what do we need the session for?
+% N: sos_main(options, session);
+% PT: session is a bit criptic, let's replace with the phase name
+sos_main(options, 'test');
+% sos_main(options, 'training');
 %------------------------------------------
 %% Clean up the path
 
-for i = 1 : length(paths2Add)
-    rmpath(paths2Add);
+for iPath = 1 : length(options.paths2Add)
+    rmpath(options.paths2Add{iPath});
 end
