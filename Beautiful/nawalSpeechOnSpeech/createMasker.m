@@ -1,57 +1,10 @@
-function [target,masker,sentence,fs,masker_struct] = expe_make_stim(options,trial,phase,varargin)
-
-    %phase needs to switch between training 1 (no masker), training 2 (masker)
-    %and test. This parameter is set in expe_main.
-    
-    switch phase
-        case 'training1'
-            [target,sentence,fs] = createTarget(options,trial,phase,varargin{1});
-            masker = zeros(length(target),1);
-            masker_struct = [];
-        case 'training2'
-            [target,sentence,fs] = createTarget(options,trial,phase,varargin{1});
-            [masker,target,fs,masker_struct] = createMasker(options,trial,'training',target,fs,varargin{1});
-        case 'test'
-            [target,sentence,fs] = createTarget(options,trial,phase);
-            [masker,target,fs,masker_struct] = createMasker(options,trial,phase,target,fs);
-    end
-    
-    
-end
-
-function [target,sentence,fs] = createTarget(options,trial,phase,varargin)
-
-    switch phase
-        case 'test'
-            sentence = trial.test_sentence;
-        case {'training1','training2'}
-            sentence = trial.(phase).sentences(varargin{1});
-    end
-    
-% N:    wavIn = fullfile(options.sound_path, [num2str(sentence), '.wav']);
-    wavIn = [options.sound_path 'Vrouw' sprintf('%03d', sentence) '.wav'];
-    if exist(wavIn, 'file')
-        [target,fs] = audioread(wavIn);
-    else
-        fprintf('%s does not exists, skipping\n', wavIn);
-        return
-    end
-    
-    silence_gap_start = floor(0.5*fs); %500ms silence at the beginning of the target.
-    silence_gap_end = floor(0.25*fs); %250ms silence at the end of the target.
-    target = [zeros(silence_gap_start,1);target;zeros(silence_gap_end,1)]; %zero pad with silence gap of 500 ms at the beginning and 250 ms at the end.
-    
-
-end
-
-
-function [masker,target,fs,masker_struct] = createMasker(options,trial,phase,target,fs,varargin)
+function [masker,target,fs,masker_struct] = createMasker(options,condition,phase,target,fs,varargin)
  
    %Take random pieces of masker sentences and stitch them together.
     %Target and masker should be the same length to be added later.  
 
     sentence_bank = [];
-    for i_masker_list = 1:length(options.masker)
+    for i_masker_list = 1 : length(options.masker)
         
         masker_list = options.masker(i_masker_list);
         masker_sentences = options.list{masker_list}(1) : options.list{masker_list}(2);
@@ -73,11 +26,12 @@ function [masker,target,fs,masker_struct] = createMasker(options,trial,phase,tar
 % N:        masker_struct(n_chunk).sentence = sentence_bank{i};
         masker_struct(n_chunk).sentence = sentence_bank(sentence_bank == i);
         
-        f0 = options.(phase).voices(trial.dir_voice).f0;
-        ser = options.(phase).voices(trial.dir_voice).ser;
+        f0 = options.(phase).voices(condition.dir_voice).f0;
+        ser = options.(phase).voices(condition.dir_voice).ser;
 % N:         filename = make_fname([num2str(i) '.wav'], f0, ser, options.tmp_path);
 %         filename = make_fname([options.maskerSex num2str(i) '.wav'], f0, ser, options.tmp_path);
-        filename = [options.tmp_path 'M_' options.maskerSex num2str(i) ...
+%         filename = [options.tmp_path 'M_' options.maskerSex num2str(i) ...
+        filename = [options.tmp_path 'M_' condition.maskerVoice num2str(i) ...
             sprintf('_GPR%.2f_SER%.2f', f0, ser) '.wav'];
         % load file if it exists
         if exist(filename,'file')
@@ -148,22 +102,7 @@ function [masker,target,fs,masker_struct] = createMasker(options,trial,phase,tar
     silence_start = floor(0.5*fs);
     silence_end = length(target)-floor(0.25*fs);
     rmsT = rms(target(silence_start:silence_end));
-    masker = masker./rmsM.*(rmsT/10^(trial.TMR/20));
+    masker = masker./rmsM.*(rmsT/10^(condition.TMR/20));
     
 
 end
-
-% function fname = make_fname(wav, f0, ser, destPath)
-% 
-%     [~, name, ext] = fileparts(wav);
-%     
-%     fname = sprintf('M_%s_GPR%.2f_SER%.2f', name, f0, ser);
-%    
-%     fname = fullfile(destPath, [fname, ext]);
-% end
-% 
-% 
-
-
-
-

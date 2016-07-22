@@ -1,4 +1,4 @@
-function options = sos_defineDirectories(participant)
+function options = sos_defineDirectories(options, participant)
 % EXPE_OPTIONS([OPTIONS])
 %   Defines general options for the experiment, for instance:
 %   - where the results are saved
@@ -54,6 +54,11 @@ if isempty(dir([options.sound_path '*wav']))
     error('%s does not contain wav files', options.sound_path);
 end
 
+options.sentences_file = [getHome '/sounds/' participant.sentencesCourpus '/corpusDefinition.txt'];
+if ~exist(options.sentences_file, 'file')
+    error('%s file with the sentences does not exist', options.sentences_file);
+end
+
 % prevent paolo's computer to get full of rubbish straight processed
 % files
 options.tmp_path   = [getHome '/sounds/' participant.sentencesCourpus '/cache/'];
@@ -63,11 +68,8 @@ end
 if ~exist(options.tmp_path, 'dir')
     mkdir(options.tmp_path);
 end
+% check that there are files inside
+sos_doMaskersExist(options);
 
-options.sentences_file = [getHome '/sounds/' participant.sentencesCourpus '/corpusDefinition.txt'];
-if ~exist(options.sentences_file, 'file')
-    error('%s file with the sentences does not exist', options.sentences_file);
-end
-    
 
 

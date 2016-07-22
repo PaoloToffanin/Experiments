@@ -1,15 +1,36 @@
-function emotion_AdultsGUI(phase)
-    % interface for emotion task
-    simulateSubj = false;
-    if regexp(phase, 'autoplay')
-        phase = regexp(phase, 'autoplay', 'split');
-        phase = phase{1};
-        simulateSubj = true;
+function emotion_AdultsGUI(varargin)
+% interface for emotion task
+% 
+% emotion_AdultsGUI('test')
+% emotion_AdultsGUI('training')
+% emotion_AdultsGUI() will run in autoplay, testing phase
+
+%% process function's input
+    simulateSubj = true;
+    phase = 'training';
+    if nargin > 0
+        phase = varargin{1};
+        simulateSubj = false;
+%         if strcmp(phase, 'autoplay')
+%             simulateSubj = true;
+%         end
     end
-        
-    %  Create and then hide the GUI as it is being constructed.
 
-
+%%    
+    options.paths2Add = {
+        '../lib/MatlabCommonTools/'
+%         '../lib/vocoder_2015', ...
+%         '../lib/STRAIGHTV40_006b', ...
+        };
+    for ipath = 1 : length(options.paths2Add)
+        if ~exist(options.paths2Add{ipath}, 'dir')
+            error([options.paths2Add{ipath} ' does not exists, check the ../']);
+        else
+            addpath(options.paths2Add{ipath});
+        end
+    end
+    
+%% Create GUI 
     screen = monitorSize;
     screen.xCenter = round(screen.width / 2);
     screen.yCenter = round(screen.heigth / 2);
@@ -55,13 +76,24 @@ function emotion_AdultsGUI(phase)
     movegui(f,'center')
     
     % load stimuli for presentation
-    soundDir = '../Stimuli/Emotion/Emotion_normalized/';
-    soundDir = '../Stimuli/Emotion_normalized/';
+    cue = {'normalized', 'intact'};
+    cue = cue(randperm(length(cue)));
+    cue = cue{1};
+    switch cue
+        case 'intact'
+            soundDir = [getHome '/sounds/Emotion/'];
+        case 'normalized'
+            soundDir = [getHome '/sounds/Emotion_normalized/'];
+        otherwise
+            fprintf('clue %s is unknown\n', cue);
+            return
+    end
 %     emotionvoices = classifyFiles(soundDir);
 %     emotionvoices = files2play(emotionvoices, phase);
-    emotionvoices = files2play(classifyFiles(soundDir), phase);
+    emotionvoices = files2play(classifyFiles(soundDir, phase), phase);
     options = [];
-    [expe, options] = building_conditions2(options);
+%     [expe, options] = building_conditions2(options);
+    [expe, options] = building_conditions(options);
     
     % initialize response structure
     resp = repmat(struct('key', 0, 'acc', 0), 1);

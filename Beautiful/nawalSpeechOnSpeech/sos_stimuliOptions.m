@@ -1,4 +1,4 @@
-function options = sos_stimuliOptions(options)
+function options = sos_stimuliOptions
 % EXPE_OPTIONS([OPTIONS])
 %   Defines general options for the experiment, for instance:
 %   - where the results are saved
@@ -18,5 +18,9 @@ options.training.n_sentences = 6;
 options.test.f0s  = [4, 9, 12]; % Semitones re. original
 options.test.vtls = [4, 9, 12]; % Semitones re. original
 
-options.targetSex = 'Man'; % voice to test, otherwise Man
-options.maskerSex = 'Vrouw'; 
+options.targetSex = 'Vrouw'; % voice to test, otherwise Man
+options.maskerSex = {'Vrouw', 'Man'}; %  
+options.maskerSex = options.maskerSex(randperm(length(options.maskerSex)));
+
+% options.maskerSex = 'Man'; %  
+

@@ -17,13 +17,13 @@ options.result_prefix = 'SOS_';
 current_dir = fileparts(mfilename('fullpath'));
 added_path  = {};
 
-added_path{end+1} = '~/Library/Matlab/auditory-research-tools/vocoder_2015';
+added_path{end+1} = '~/Experiments/Beautiful/lib/vocoder_2015';
 addpath(added_path{end});
 
-added_path{end+1} = '~/Library/Matlab/auditory-research-tools/STRAIGHTV40_006b';
+added_path{end+1} = '~/Experiments/Beautiful/lib/STRAIGHTV40_006b';
 addpath(added_path{end});
 
-added_path{end+1} = '~/Library/Matlab/auditory-research-tools/common_tools';
+added_path{end+1} = '~/Experiments/Beautiful/lib/MatlabCommonTools';
 addpath(added_path{end});
 
 %-------------------------------------------------

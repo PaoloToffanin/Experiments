@@ -156,10 +156,10 @@ function h = initExpGUI(expe,options)
         y = getaudiodata(h.recObj);
         fs = h.recObj.SampleRate;
         
-        %check if 'results' field exists:
-        filename = options.res_filename;
-        vars = whos('-file',filename);
-        results_exist = ismember('results', {vars.name});
+%         %check if 'results' field exists:
+%         filename = options.res_filename;
+%         vars = whos('-file',filename);
+%         results_exist = ismember('results', {vars.name});
         
         words = strsplit(sentence, ' ');
         
@@ -198,9 +198,12 @@ function h = initExpGUI(expe,options)
             
         end
         
-            
-        if results_exist
-            load(filename,'results') 
+        %check if 'results' field exists:
+%         filename = [options.result_path  options.res_filename];
+        if exist([options.result_path  options.res_filename], 'file')
+% N        if results_exist
+%             load(filename, 'results') 
+            load([options.result_path options.res_filename], 'results')
             results(i_condition).words = repeatedWords;
             results(i_condition).sentence = sentence;
             results(i_condition).nwords_correct = length(repeatedWords);
@@ -217,7 +220,6 @@ function h = initExpGUI(expe,options)
             results(i_condition).trial_start_timestamp = trial.timestamp;
             results(i_condition).stim_start_timestamp = h.timestamp;
             results(i_condition).trial_dur = trial_dur;
-            
         else
             results.words = repeatedWords;
             results.sentence = sentence;
@@ -236,18 +238,24 @@ function h = initExpGUI(expe,options)
             results.trial_dur = trial_dur;
         end
         expe.test.conditions(i_condition).done = 1;
-        save(filename,'expe','options','results');
+%         save(filename, 'expe', 'options', 'results');
+        save([options.result_path  options.res_filename], 'expe', 'options', 'results');
         
         %save the audio recording:
         f0 = options.test.voices(trial.dir_voice).f0;
         ser = options.test.voices(trial.dir_voice).ser;
         TMR = trial.TMR;
-        fname = sprintf('Condition%s_Sentence%s_Voc%s_GPR%.2f_SER%.2f_TMR%d', num2str(i_condition) ,num2str(trial.test_sentence),...
-            num2str(trial.vocoder) , f0, ser, TMR);
-        fname = fullfile(options.res_foldername, [fname, '.flac']); %save as .flac for space purposes
+%         fname = sprintf('Condition%s_Sentence%s_Voc%s_GPR%.2f_SER%.2f_TMR%d', num2str(i_condition) ,num2str(trial.test_sentence),...
+%             num2str(trial.vocoder) , f0, ser, TMR);
+        fname = sprintf('Condition%d_Sentence%d_Voc%d_GPR%.2f_SER%.2f_TMR%d', ...
+            i_condition, trial.test_sentence, trial.vocoder, f0, ser, TMR);
+% N:        fname = fullfile(options.res_foldername, [fname, '.flac']); %save as .flac for space purposes
+        fname = fullfile(options.rec_foldername, [fname, '.flac']); %save as .flac for space purposes
         
         if ~exist(fname,'file')
-            audiowrite(fname,y,fs,'BitsPerSample',24);
+% N:            audiowrite(fname,y,fs,'BitsPerSample',24);
+            audiowrite(fname,y,fs,'BitsPerSample',16); % paolot 16 bits is probably enought too
+            % check the settings of the audiorecorder below as well!
         end
             
    
@@ -262,7 +270,11 @@ function h = initExpGUI(expe,options)
         
         %%%%%%%%%%%%%%%%%%%%%%%
 %        RECORD TRIAL (STIMULUS + RESPONSE):
-        h.recObj = audiorecorder(44100,24,1,0);
+% n:        h.recObj = audiorecorder(44100,24,1,0);
+% ridiculously high! Can't we just downsample to 22050 and 16 bits, it's
+% only for rescoring/double checking the repetitions
+%         h.recObj = audiorecorder(22050,16,1,0); 
+        h.recObj = audiorecorder(22050,16,1); % Device Error: Invalid sample rate
         disp('Recording...')
         record(h.recObj);
        % play(h.recObj);

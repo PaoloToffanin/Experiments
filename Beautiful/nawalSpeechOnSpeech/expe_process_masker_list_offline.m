@@ -1,41 +1,43 @@
-function expe_process_masker_list_offline()
+function expe_process_masker_list_offline(options)
+%N: function expe_process_masker_list_offline()
 
 %Create Masker Straight matrices offline:
 
-if is_test_machine() %If it's computer in Tinnitus Room
-    disp('-------------------------');
-    disp('--- In Tinnitus Room ---');
-    disp('-------------------------');
-    options.sound_path = '/Users/dbaskent/Sounds/VU_zinnen/Vrouw/equalized';
-    options.tmp_path   = '/Users/dbaskent/Sounds/VU_zinnen/Vrouw/processed';
+% if is_test_machine() %If it's computer in Tinnitus Room
+%     disp('-------------------------');
+%     disp('--- In Tinnitus Room ---');
+%     disp('-------------------------');
+%     options.sound_path = '/Users/dbaskent/Sounds/VU_zinnen/Vrouw/equalized';
+%     options.tmp_path   = '/Users/dbaskent/Sounds/VU_zinnen/Vrouw/processed';
+% 
+% else %If it's experimenter's OWN computer:
+%     disp('-------------------------');
+%     disp('--- On coding machine ---');
+%     disp('-------------------------');
+%     options.sound_path = '~/Library/Matlab/Sounds/VU_zinnen/Vrouw/equalized';
+%     options.tmp_path   = '~/Library/Matlab/Sounds/VU_zinnen/Vrouw/processed';
+% end
 
-else %If it's experimenter's OWN computer:
-    disp('-------------------------');
-    disp('--- On coding machine ---');
-    disp('-------------------------');
-    options.sound_path = '~/Library/Matlab/Sounds/VU_zinnen/Vrouw/equalized';
-    options.tmp_path   = '~/Library/Matlab/Sounds/VU_zinnen/Vrouw/processed';
-end
-
-    filename = fullfile(options.tmp_path, sprintf('options.mat'));
-    options.filename = filename;
-    
-    
-%-------------------------------------------------
-%% Set appropriate path
-
-current_dir = fileparts(mfilename('fullpath'));
-added_path  = {};
-
-added_path{end+1} = '~/Library/Matlab/auditory-research-tools/vocoder_2015';
-addpath(added_path{end});
-
-added_path{end+1} = '~/Library/Matlab/auditory-research-tools/STRAIGHTV40_006b';
-addpath(added_path{end});
-
-added_path{end+1} = '~/Library/Matlab/auditory-research-tools/common_tools';
-addpath(added_path{end});
-
+% options.sound_path = '~/sounds/VU_zinnen/sentences/';
+% options.tmp_path   = '~/sounds/VU_zinnen/VU_zinnen/Vrouw/processed';
+%     
+%     filename = fullfile(options.tmp_path, sprintf('options.mat'));
+%     options.filename = filename;
+%     
+%  
+% %-------------------------------------------------
+% 
+% current_dir = fileparts(mfilename('fullpath'));
+% added_path  = {};
+% 
+% added_path{end+1} = '~/Experiments/Beautiful/lib/vocoder_2015';
+% addpath(added_path{end});
+% 
+% added_path{end+1} = '~/Experiments/Beautiful/lib/STRAIGHTV40_006b';
+% addpath(added_path{end});
+% 
+% added_path{end+1} = '~/Experiments/Beautiful/lib/MatlabCommonTools';
+% addpath(added_path{end});
 
 [expe, options] = expe_build_conditions(options);
 
@@ -69,7 +71,7 @@ for j = 1:length(phase);
             f0 = options.(phase{j}).voices(i).f0
             ser = options.(phase{j}).voices(i).ser
 
-            [masker,fs] = straight_process(maskerList(file), f0, ser, options);
+            [masker, fs] = straight_process(maskerList(file), f0, ser, options);
 
         end
 
@@ -78,15 +80,12 @@ end
 
 toc()
 
+end % end: function expe_process_masker_list_offline
 
-
-
-
-end
-
+%% straight processing
 function [y, fs] = straight_process(sentence, t_f0, ser, options)
-
-    wavIn = fullfile(options.sound_path, [num2str(sentence), '.wav']);
+%
+    wavIn = fullfile(options.sound_path, ['Vrouw' num2str(sentence), '.wav']);
     wavOut = make_fname(wavIn, t_f0, ser, options.tmp_path);
 
     if ~exist(wavOut, 'file')
@@ -125,8 +124,9 @@ function [y, fs] = straight_process(sentence, t_f0, ser, options)
 
         [y, fs] = audioread(wavOut);
     end
-end
+end % end: function [y, fs] = straight_process(sentence, t_f0, ser, options)
 
+%% 
 function fname = make_fname(wav, f0, ser, destPath)
 
     [~, name, ext] = fileparts(wav);

@@ -50,7 +50,7 @@ function options = gender_options(options)
     if isempty(dir(options.tmp_path)) && ~strcmp(options.stage, 'generation')
         opt = char(questdlg('Running experiment without preprocessing sounds?','CRM','yes','no','no'));
         switch opt
-            case 'yes',
+            case 'yes'
                 warning('This will slow down your experiment substantially, press ctrl+c if unhappy')
             case 'no'
                 warning('call gender_run(''gen'') to generate the stimuli before running the exp')

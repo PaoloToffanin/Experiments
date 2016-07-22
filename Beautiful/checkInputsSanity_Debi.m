@@ -1,4 +1,4 @@
-function participant = checkInputsSanity(participant, options)
+function participant = checkInputsSanity_Debi(participant, options)
 
 
     %% initialization variables for EXPERIMENT RUNNER GUI
@@ -9,7 +9,7 @@ function participant = checkInputsSanity(participant, options)
     end
     if strcmp(participant.kidsOrAdults, 'Kid')
 %         participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
-        participant.expDir = [participant.expDir {'fishy', 'emotion'}];
+        participant.expDir = [participant.expDir {'fishy'}];
     end
     participant.expButton = participant.expDir;
     participant.buttonEnabled(1:length(participant.expDir)) = {'off'};
@@ -46,11 +46,8 @@ function participant = checkInputsSanity(participant, options)
                     end
                 case 'emotion'
                     % we care only of test, training they can redo
-                    switch length(fields(tmp.results.test))
-                        case 2
-                            completedExps = [completedExps find(strcmp(participant.expDir, participant.expDir{iExp}))];
-                        case 1
-                            completedExps = [completedExps iExp];
+                    if isfield(tmp.results, 'test')
+                        completedExps = [completedExps iExp];
                     end
                 case 'gender'
                     if isfield(tmp, 'results') && length([tmp.results.test.responses.trial]) == tmp.options.test.total_ntrials
@@ -121,7 +118,7 @@ function participant = checkInputsSanity(participant, options)
                 participant.expDir = {'NVA', 'fishy', 'emotion', 'gender'};
 %                 participant.expButton = participant.expDir;
                 if strcmp(participant.kidsOrAdults, 'Kid')
-                    participant.expDir = [participant.expDir {'fishy', 'emotion'}];
+                    participant.expDir = [participant.expDir {'fishy'}];
                 end
 %                 participant.buttonEnabled(1:length(participant.expDir)) = {'on'};
             else
@@ -152,7 +149,7 @@ function participant = checkInputsSanity(participant, options)
         % check that there are no repetitions between gender and fishy
         % if gender is repeated take fishy and put it in between and the other
         % way around for fishy
-        repeated = {'fishy', 'emotion'}; 
+        repeated = {'fishy'}; 
 %         participant.expDir(end + 1 : end + 2) = repeated(:);
         stopSearch = false;
         while true

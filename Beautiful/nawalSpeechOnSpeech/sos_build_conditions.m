@@ -1,4 +1,4 @@
-function [expe, options] = expe_build_conditions(options)
+function [expe, options] = sos_build_conditions(options)
 % Creates the options and expe structs. Those contain all conditions and
 % params that are needed for the experiment.
 
@@ -62,7 +62,7 @@ options.training.voice_pairs = [ones(length(options.training.voices),1), (1:leng
 % sentences = load(options.sentence_bank,name);
 % sentences = sentences.(name);
 
-corpus = parseCorpus(options); % this is only for targets
+corpus = parseCorpus(options);
 
 totSentences = length(corpus);
 % N: for i = 1: 13 : length(sentences)
@@ -89,7 +89,7 @@ options.masker = [13 21 39];            % masker sentences training+test all ses
 options.vocoder = 0;
 
 %--- Define Target-to-Masker Ratio in dB:
-options.TMR = 8; %testing at 8dB
+options.TMR = [0 5 10]; %testing at 8dB
 %This protocol was adopted from Mike and Nikki's Musician effect on SOS
 %performance; TMR values taken from Pals et al. 2015, and Stickney et al.
 %2004
@@ -134,36 +134,46 @@ rand_testList = datasample(testList,length(testList), 'Replace', false);
 % P: NOTE!! 'test' is the name of a matlab function. do not use test for
 % naming structures!
 itrial = 1;
-for i_vp = rnd_voice_pairs
-    
-    ind_testList = rand_testList(i_condition);
-    test_sentences = options.list{ind_testList}(1) : options.list{ind_testList}(2);
-    
-    %Randomize the test sentences within a list:
-    test_sentences = datasample(test_sentences, length(test_sentences),...
-        'Replace', false);
-    
-    for i_sent = test_sentences
-        
-        condition.session = session;
-        condition.vocoder = options.vocoder;
-        condition.TMR = options.TMR;
-        condition.test_sentence = i_sent;
-        condition.test_list = ind_testList;
-        condition.ref_voice = options.test.voice_pairs(i_vp, 1);
-        condition.dir_voice = options.test.voice_pairs(i_vp, 2);
-        condition.done = 0;
-        condition.visual_feedback = 0;
-        testing.conditions(itrial) = condition;
-        itrial = itrial + 1;
+nTMRs = length(options.TMR);
+nMaskerVoices = length(options.maskerSex);
+for iMasker = 1 : nMaskerVoices
+    for iTMR = 1 : nTMRs
+        for i_vp = rnd_voice_pairs
+            
+            ind_testList = rand_testList(i_condition);
+            test_sentences = options.list{ind_testList}(1) : options.list{ind_testList}(2);
+            
+            %Randomize the test sentences within a list:
+            test_sentences = datasample(test_sentences, length(test_sentences),...
+                'Replace', false);
+            
+            for i_sent = test_sentences
+                
+                condition.session = session;
+                condition.vocoder = options.vocoder;
+                condition.TMR = options.TMR(iTMR);
+                condition.test_sentence = i_sent;
+                condition.test_list = ind_testList;
+                condition.ref_voice = options.test.voice_pairs(i_vp, 1);
+                condition.dir_voice = options.test.voice_pairs(i_vp, 2);
+                condition.done = 0;
+                condition.visual_feedback = 0;
+                condition.maskerVoice = options.maskerSex{iMasker};
+                testing.conditions(itrial) = condition;
+                itrial = itrial + 1;
+            end
+            i_condition = i_condition + 1;
+        end
     end
-    i_condition = i_condition + 1;
-end
-        
+    % randomize trial order but keep woman and man in separate phases
+    totTr4cond = length(test_sentences) * length(rnd_voice_pairs) * nTMRs; 
+    testing.conditions(totTr4cond * (iMasker - 1) + 1 : end) = ...
+        testing.conditions(totTr4cond * (iMasker - 1) + randperm(totTr4cond));
+end 
 % end % end 'for session = 1'
 
 %Randomize all:
-testing.conditions = testing.conditions(randperm(length(testing.conditions)));
+% testing.conditions = testing.conditions(randperm(length(testing.conditions)));
 % append testing to the expe structure and save
 expe.test = testing;
 %--
