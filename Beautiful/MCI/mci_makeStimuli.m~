@@ -1,4 +1,4 @@
-function [stimuli, nBlocks] = mci_makeStimuli(phase)
+function stimuli = mci_makeStimuli(phase)
 
 
 % since there are repetitions of the same stimuli we actually do not need
@@ -68,8 +68,6 @@ function [stimuli, nBlocks] = mci_makeStimuli(phase)
 %     stimuli = stimuli(randperm(length(stimuli)));
 % this is not necessary now... 
         % training or test?
-    nTrialsPerBlock = nContours * nRepetitions;
-    nBlocks = length(stimuli) / nTrialsPerBlock;
     switch phase
         case 'training'
             trainingSet = [];
@@ -88,13 +86,11 @@ function [stimuli, nBlocks] = mci_makeStimuli(phase)
         case 'test'
             % randomize every 27 trials so that we keep blocks of contours
             % per repetition
+            nTrialsPerBlock = nContours * nRepetitions;
+            nBlocks = length(stimuli) / nTrialsPerBlock;
             for iblocks = 1 : nBlocks
-%                 fprintf('%i %i\n', min([1 : nTrialsPerBlock] + nTrialsPerBlock * (iblocks - 1)), ...
-%                 max([1 : nTrialsPerBlock] + nTrialsPerBlock * (iblocks - 1)))
-%                 fprintf('%i %i\n', min(randperm(nTrialsPerBlock) + nTrialsPerBlock * (iblocks - 1)), ...
-%                 max(randperm(nTrialsPerBlock) + nTrialsPerBlock * (iblocks - 1)))
-                stimuli([1 : nTrialsPerBlock] + nTrialsPerBlock * (iblocks - 1)) = ...
-                    stimuli(randperm(nTrialsPerBlock) + nTrialsPerBlock * (iblocks - 1));
+                
+                stimuli([1 : nTrialsPerBlock] + nTrialsPerBlock * (iblocks - 1)) = randperm(nTrialsPerBlock);
             end
         otherwise
             error('Error. \nUnknown phase option %s', phase)

@@ -50,12 +50,12 @@ close all
 
 %     nStim = length(stimuli);
 %     stimuli = stimuli(randperm(nStim));
-    h = warndlg('Pressing START will begin the task','READY TO GO?', 'modal');
-    uiwait(h);
+    warndlg('Pressing START will begin the task','READY TO GO?')
     
     f.Visible = 'on';
     pause(1);
     blocksCompleted = 0;
+    totBlocks = 
     
     playMCI
     
@@ -83,10 +83,8 @@ close all
             % %% break
             if mod(istim, nTrialsPerBlock) == 0
                 blocksCompleted = blocksCompleted + 1;
-                htmp = warndlg(...
-                    sprintf('Please take a break/n/nPressing START to continue with the task', 'modal'),...
-                    sprintf('%i of %i blocks completed', blocksCompleted, nBlocks));
-                uiwait(htmp);
+                warndlg(sprintf('Please take a break/n/nPressing START to continue with the task'),...
+                    sprintf('%i of %i blocks completed'));
             end
             istim = istim + 1; % do next trial
             playMCI
