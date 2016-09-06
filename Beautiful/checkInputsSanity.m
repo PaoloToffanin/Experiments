@@ -2,13 +2,12 @@ function participant = checkInputsSanity(participant, options)
 
 
     %% initialization variables for EXPERIMENT RUNNER GUI
-%     participant.expName= {'NVA_run.m', 'fishy_run.m', 'emotion_run.m', 'gender_run.m'};
-    participant.expDir = {'fishy', 'emotion', 'gender'};
-    if strcmp(participant.language , 'Dutch')
-        participant.expDir = [{'NVA'} participant.expDir];
+    % english version of the task does not do NVA
+    if strcmp(participant.language , 'English')
+        participant.expDir(strcmp(participant.expDir, 'NVA')) = [];
     end
+    % kids versions of fishy and emotion is split in half
     if strcmp(participant.kidsOrAdults, 'Kid')
-%         participant.expName = [participant.expName {'fishy_run.m', 'emotion_run.m'}];
         participant.expDir = [participant.expDir {'fishy', 'emotion'}];
     end
     participant.expButton = participant.expDir;
@@ -24,9 +23,15 @@ function participant = checkInputsSanity(participant, options)
         if ~isempty(file)
             % check if all conditions have been performed, not only if the file
             % exists
-            tmp = load([options.home '/Results/', ...
-                upper(participant.expDir{iExp}(1)) participant.expDir{iExp}(2:end), '/' ...
-                file.name]);
+%             tmp = load([options.home '/Results/', ...
+%                 upper(participant.expDir{iExp}(1)) participant.expDir{iExp}(2:end), '/' ...
+%                 file.name]);
+            % this if statement is to accomodate the data structure of the MCI task
+            if length(file) > 1 
+                % we only care of test, training they can do again
+                file = file(cellfun('isempty', strfind({file.name}, 'training')));
+            end
+            tmp = load([file.folder '/' file.name]);
             switch participant.expDir{iExp}
                 case 'NVA'
                     if length(fields(tmp.responses)) >= 2
@@ -53,9 +58,17 @@ function participant = checkInputsSanity(participant, options)
                             completedExps = [completedExps iExp];
                     end
                 case 'gender'
-                    if isfield(tmp, 'results') && length([tmp.results.test.responses.trial]) == tmp.options.test.total_ntrials
+                    if (isfield(tmp, 'results') && ...
+                            length([tmp.results.test.responses.trial]) == tmp.options.test.total_ntrials)
                         completedExps = [completedExps iExp];
                     end
+                case 'MCI'
+                    % we care only of test, training they can redo
+                    if sum([tmp.stimuli.done] == 1) == length(tmp.stimuli)
+                        completedExps = [completedExps iExp];
+                    end
+                otherwise
+                    error('\nThe task %s does not exists\nTyping error??\n', participant.expDir{iExp});
             end
 
         end
