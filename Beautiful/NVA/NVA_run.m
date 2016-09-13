@@ -47,9 +47,9 @@ function NVA_run
         scoreNVA(participant.name)
     end
     
-    for iPath = 1 : length(pathsToAdd)
-        rmpath(pathsToAdd{iPath})
-    end
+%     for iPath = 1 : length(pathsToAdd)
+%         rmpath(pathsToAdd{iPath})
+%     end
 
 end
 

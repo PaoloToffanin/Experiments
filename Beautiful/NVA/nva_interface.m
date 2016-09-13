@@ -228,18 +228,19 @@ function nva_interface(stimulus, options, participant, pathsToAdd)
             what2play = audioplayer([y(:, 1) y(:, 1)], fs);% make stereo sound
         else
             % christina plays stimuli with noise at different levels
-            target = remove_silence(y(:, 1), fs); 
+            addpath('../lib/MatlabCommonTools/');
+            target = remove_silence(y(:, 1), fs);
             rmsT = rms(target);
             silenceInFs = floor(0.25*fs);
 %             silence_end = length(target)+ 2 * silenceInFs;
             target = [zeros(silenceInFs, 1); target; zeros(silenceInFs, 1)]; 
             if stimulus.(list{iList}).TMR == Inf
+                xOut = (target)*10^(-options.attenuation_dB/20);
+            else
                 masker = noise(1 : length(target))./rmsM.*(rmsT/10^(stimulus.(list{iList}).TMR/20));
                 addpath('../lib/MatlabCommonTools/');
                 masker = cosgate(masker, fs, 50e-3); %50ms cosine ramp to both beginning and end of masker signal.
                 xOut = (target+masker)*10^(-options.attenuation_dB/20);
-            else
-                xOut = (target)*10^(-options.attenuation_dB/20);
             end
             what2play = audioplayer([xOut], fs);
         end
