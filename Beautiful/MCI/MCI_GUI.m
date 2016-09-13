@@ -33,7 +33,7 @@ close all
         for yButton = 1 : length(ypos)
             iLoop = iLoop + 1;
             imgfiles = dir([options.locationImages '*_MCI' num2str(iLoop) '.jpg']);
-            tmp = imread(imgfiles(1).name);
+            tmp = imread([options.locationImages imgfiles(1).name]);
             a = tmp;
             a(:, :, 2) = tmp;
             a(:, :, 3) = tmp;
