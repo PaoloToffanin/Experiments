@@ -28,10 +28,11 @@ close all
     xpos = linspace(startX, widthFig - sideButton(1) - startX, 3);
     ypos = linspace(startY, heightFig - sideButton(2) - startY, 3);
     iLoop = 0;
+    [options] = MCI_options;
     for xButton = 1 : length(xpos)
         for yButton = 1 : length(ypos)
             iLoop = iLoop + 1;
-            imgfiles = dir(['*_MCI' num2str(iLoop) '.jpg']);
+            imgfiles = dir([options.locationImages '*_MCI' num2str(iLoop) '.jpg']);
             tmp = imread(imgfiles(1).name);
             a = tmp;
             a(:, :, 2) = tmp;

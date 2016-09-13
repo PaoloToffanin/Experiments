@@ -11,7 +11,7 @@ function options = gender_options(options)
 %     volume = SoundVolume(.42);
     volume = SoundVolume(.36);
     
-    options.locationImages
+    options.locationImages = [options.home '/imagesBeautiful/gender/Images/'];
     
     [~, name] = system('hostname');
 %     options.result_path   = [options.home '/results/Gender'];
