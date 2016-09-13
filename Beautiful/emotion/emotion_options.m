@@ -1,5 +1,7 @@
 function [options] = emotion_options
 
-    options.locationImages = '~/imagesBeautiful/emotion/Images/';
-
+    addpath('../lib/MatlabCommonTools/');
+    options.locationImages = [getHome '/imagesBeautiful/emotion/Images/'];
+    rmpath('../lib/MatlabCommonTools/');
+ 
 end

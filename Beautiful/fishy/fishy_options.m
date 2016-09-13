@@ -5,7 +5,7 @@ if ~exist(options.result_path, 'dir')
     mkdir(options.result_path);
 end
 options.result_prefix = 'jvo_';
-options.locationImages = '~/imagesBeautiful/fishy/Images/';
+options.locationImages =  [options.home '/imagesBeautiful/fishy/Images/'];
 
 options.extendStructures = false; % fishy_build_conditions, if the expe 
 % structures or the results structures need to be extended with an 
