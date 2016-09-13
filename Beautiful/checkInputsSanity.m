@@ -23,15 +23,16 @@ function participant = checkInputsSanity(participant, options)
         if ~isempty(file)
             % check if all conditions have been performed, not only if the file
             % exists
-%             tmp = load([options.home '/Results/', ...
-%                 upper(participant.expDir{iExp}(1)) participant.expDir{iExp}(2:end), '/' ...
-%                 file.name]);
             % this if statement is to accomodate the data structure of the MCI task
             if length(file) > 1 
                 % we only care of test, training they can do again
                 file = file(cellfun('isempty', strfind({file.name}, 'training')));
             end
-            tmp = load([file.folder '/' file.name]);
+%            tmp = load([file.folder '/' file.name]);
+            tmp = load([options.home '/Results/', ...
+                upper(participant.expDir{iExp}(1)) participant.expDir{iExp}(2:end), '/' ...
+                file.name]);
+
             switch participant.expDir{iExp}
                 case 'NVA'
                     if length(fields(tmp.responses)) >= 2
@@ -67,6 +68,9 @@ function participant = checkInputsSanity(participant, options)
                     if sum([tmp.stimuli.done] == 1) == length(tmp.stimuli)
                         completedExps = [completedExps iExp];
                     end
+                case 'sos'
+                    % we care only of test, training they can redo
+                    
                 otherwise
                     error('\nThe task %s does not exists\nTyping error??\n', participant.expDir{iExp});
             end

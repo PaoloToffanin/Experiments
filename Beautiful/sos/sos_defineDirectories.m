@@ -25,12 +25,12 @@ end
     
 %----------------- Results
 options.home = getHome;
-options.result_path   = [getHome '/Results/SpeechOnSpeech/'];
+options.result_path   = [getHome '/Results/Sos/'];
 if ~exist(options.result_path, 'dir')
     mkdir(options.result_path);
 end
 
-% NAWAL has a specific folder for each subject, we won't only one structure
+% NAWAL has a specific folder for each subject, we want only one structure
 % with the results inside of the results folder, 
 % NOTE: this is a quick and dirty fix, this has to be removed
 % from the script later on

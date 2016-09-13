@@ -18,11 +18,13 @@ function options = gender_options(options)
     if ~exist(options.result_path, 'dir')
         mkdir(options.result_path);
     end
-    options.sound_path = [options.home '/sounds/NVA/Dutch_equalized'];
+%     options.sound_path = [options.home '/Sounds/NVA/Dutch_equalized'];
+    options.sound_path = [options.home '/Sounds/NVA/gender/equalized'];
     if options.Bert
-        options.tmp_path   = [options.home '/sounds/NVA/gender/processed/Bert'];
+        options.tmp_path   = [options.home '/Sounds/NVA/gender/processed/Bert'];
     else
-        options.tmp_path   = [options.home '/sounds/NVA/gender/processed/Original/'];
+%         options.tmp_path   = [options.home '/Sounds/NVA/gender/processed/Original/'];
+        options.tmp_path   = [options.home '/Sounds/NVA/gender/processed/'];
     end
     
     options.straight_path = '../lib/STRAIGHTV40_006b';

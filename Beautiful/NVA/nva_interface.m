@@ -131,7 +131,7 @@ function nva_interface(stimulus, options, participant, pathsToAdd)
         if ~isempty(repeatedPhonemes{1})
             
             filename = [options.responsesFolder 'nva_' participant.name '.mat'];
-            if exist(filename,'file') 
+            if exist(filename, 'file') 
                 load(filename)
             else
                 responses.listsOrder = {};
@@ -233,11 +233,14 @@ function nva_interface(stimulus, options, participant, pathsToAdd)
             silenceInFs = floor(0.25*fs);
 %             silence_end = length(target)+ 2 * silenceInFs;
             target = [zeros(silenceInFs, 1); target; zeros(silenceInFs, 1)]; 
-           
-            masker = noise(1 : length(target))./rmsM.*(rmsT/10^(stimulus.(list{iList}).TMR/20));
-            addpath('../lib/MatlabCommonTools/');
-            masker = cosgate(masker, fs, 50e-3); %50ms cosine ramp to both beginning and end of masker signal.
-            xOut = (target+masker)*10^(-options.attenuation_dB/20);
+            if stimulus.(list{iList}).TMR == Inf
+                masker = noise(1 : length(target))./rmsM.*(rmsT/10^(stimulus.(list{iList}).TMR/20));
+                addpath('../lib/MatlabCommonTools/');
+                masker = cosgate(masker, fs, 50e-3); %50ms cosine ramp to both beginning and end of masker signal.
+                xOut = (target+masker)*10^(-options.attenuation_dB/20);
+            else
+                xOut = (target)*10^(-options.attenuation_dB/20);
+            end
             what2play = audioplayer([xOut], fs);
         end
 %         playblocking(what2play); % otherwise we cannot record

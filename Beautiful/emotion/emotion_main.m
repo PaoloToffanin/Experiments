@@ -31,8 +31,8 @@ function emotion_main(subject_name, phase, cue)
     options.result_prefix = 'emo_';
     options.res_filename = [options.result_path, sprintf('%s%s.mat', options.result_prefix, options.subject_name)];
     
-%     [attempt, expe, options, results, cue] = emotion_checkOptions(options, phase, cue);
-    [attempt, expe, options, results, cue] = emotion_checkOptions_Debi(options, phase, cue);
+    [attempt, expe, options, results, cue] = emotion_checkOptions(options, phase, cue);
+%    [attempt, expe, options, results, cue] = emotion_checkOptions_Debi(options, phase, cue);
     if isempty(attempt) && isempty(expe) && isempty(options) && isempty(results)
         return
     end
