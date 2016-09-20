@@ -35,7 +35,19 @@ function participant = checkInputsSanity(participant, options)
 
             switch participant.expDir{iExp}
                 case 'NVA'
-                    if length(fields(tmp.responses)) >= 2
+%                    if length(fields(tmp.responses)) >= 2
+                    navLists = fieldnames(tmp.responses);
+                    navLists(cellfun('isempty', strfind(navLists, 'list_'))) = [];
+                    nLists = length(navLists);
+                    countFinished = 0;
+                    for list = 1 : nLists
+                        if length(tmp.responses.(navLists{list}).word) == 12
+% 12 is the number of word tested per list
+%                                length(tmp.responses.(navLists{list}).timeFromStart)
+                            countFinished = countFinished + 1;
+                        end
+                    end
+                    if countFinished == nLists;
                         completedExps = [completedExps iExp];
                     end
                 case 'fishy'
@@ -44,7 +56,8 @@ function participant = checkInputsSanity(participant, options)
                         if isfield(tmp.results, 'test')
                             switch length(tmp.results.test.conditions)
                                 case 2
-                                    completedExps = [completedExps find(strcmp(participant.expDir, participant.expDir{iExp}))];
+                                    completedExps = [completedExps ...
+                                        find(strcmp(participant.expDir, participant.expDir{iExp}))];
                                 case 1
                                     completedExps = [completedExps iExp];
                             end
@@ -54,7 +67,8 @@ function participant = checkInputsSanity(participant, options)
                     % we care only of test, training they can redo
                     switch length(fields(tmp.results.test))
                         case 2
-                            completedExps = [completedExps find(strcmp(participant.expDir, participant.expDir{iExp}))];
+                            completedExps = [completedExps  ...
+                                find(strcmp(participant.expDir, participant.expDir{iExp}))];
                         case 1
                             completedExps = [completedExps iExp];
                     end

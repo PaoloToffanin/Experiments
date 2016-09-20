@@ -21,6 +21,26 @@ function nva_interface(stimulus, options, participant, pathsToAdd)
     list = fieldnames(stimulus);
     iList = 1;
     iStim = 1;
+    responses.stimulus = stimulus;
+    % check if there are trials left over
+    if exist([options.responsesFolder 'nva_' participant.name '.mat'], 'file') 
+        load([options.responsesFolder 'nva_' participant.name '.mat'])
+        stimulus = responses.stimulus;
+        list = fieldnames(stimulus);
+        navLists = fieldnames(responses);
+        navLists(cellfun('isempty', strfind(navLists, 'list_'))) = [];
+        nLists = length(navLists);
+        for nvaList = 1 : nLists
+            if length(responses.(navLists{nvaList}).word) == ...
+                    length(stimulus.(navLists{nvaList}).words2Display)
+                iList = iList + 1;
+                iStim = iStim + 12;
+            else
+                iStim = iStim + length(responses.(navLists{nvaList}).word) - 1;
+            end
+        end
+    end
+        %
     continueExp = true;
     
     %  Construct the bottons.

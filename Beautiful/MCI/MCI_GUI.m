@@ -41,7 +41,7 @@ close all
     widthFig = 1280;
     heightFig = 1024;
 %     sideButton = [350 290];
-    sideButton = [360 300]; % adjuste to leave room for the feedback
+    sideButton = [364 304]; % adjuste to leave room for the feedback
     if (widthFig /  sideButton(1)) < 3
         fprinft('images of contours are too wide for buttons, resize?')
     end
@@ -50,7 +50,11 @@ close all
     end
     startX = floor(rem(widthFig, sideButton(1)) / 2);
     startY = floor(rem(heightFig, sideButton(2)) / 2);
-    f = figure('Position', [startX, startY, widthFig, heightFig]);
+    f = figure('Visible','off','Position',[startX, startY, widthFig, heightFig], ...
+        'Toolbar', 'none', 'Menubar', 'none', 'NumberTitle', 'off');
+
+    
+    
     sizeButton = [sideButton(1) sideButton(2)] ./ 2;
     xpos = linspace(startX, widthFig - sideButton(1) - startX, 3);
     ypos = linspace(startY, heightFig - sideButton(2) - startY, 3);
@@ -91,6 +95,7 @@ close all
 %         uiwait(h);
 %     end
     if strcmp(participant.name, 'test')
+        istim = istim + 1;
        playMCI 
     end
     
