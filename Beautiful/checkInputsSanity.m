@@ -70,7 +70,10 @@ function participant = checkInputsSanity(participant, options)
                     end
                 case 'sos'
                     % we care only of test, training they can redo
-                    
+                    if (isfield(tmp, 'results') && ...
+                            length([tmp.expe.test.conditions.done]) == sum([tmp.expe.test.conditions.done]))
+                        completedExps = [completedExps iExp];
+                    end
                 otherwise
                     error('\nThe task %s does not exists\nTyping error??\n', participant.expDir{iExp});
             end

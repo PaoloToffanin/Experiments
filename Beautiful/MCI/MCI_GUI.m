@@ -3,7 +3,8 @@ close all
     
     phase = 'training';
 %     phase = 'test';
-    participant.name = 'test';
+    participant.name = 'paolo';
+%     participant.name = 'test';
     if nargin > 1
         phase = varargin{1};
         participant = varargin{2};
@@ -11,10 +12,36 @@ close all
 
     fprintf('MCI %s phase \n', phase);
     
+%% set up experiment
+    dir2save = '';
+    dir2save = '~/Results/MCI/';
+    % check if part of the experiment has been performed already
+    runBefore = dir([dir2save phase '_MCI_' participant.name '.mat']);
+    istim = 0;
+    if isempty(runBefore)
+        [stimuli, nBlocks] = MCI_makeStimuli(phase);
+        currentBlock = 1;
+    else
+%         load([runBefore.folder '/' runBefore.name]);
+        load([dir2save runBefore.name]);
+        % nBlocks = floor(sum([stimuli.done] == 1) / 27); % 27 = nContours * nRepetitions;
+        nBlocks = length(stimuli) / 27;
+        currentBlock = ceil(sum([stimuli.done] == 1) / 27); % 27 = nContours * nRepetitions;
+        istim = find([stimuli.done] == 0, 1);
+        if isempty(istim)
+            fprintf('MCI %s phase COMPLETED\n', phase);
+            clear all
+            close all
+            return;
+        end
+    end
+    nTrialsPerBlock = length(stimuli) / nBlocks;
+    
     %  Create and then hide the GUI as it is being constructed.
     widthFig = 1280;
     heightFig = 1024;
-    sideButton = [350 290];
+%     sideButton = [350 290];
+    sideButton = [360 300]; % adjuste to leave room for the feedback
     if (widthFig /  sideButton(1)) < 3
         fprinft('images of contours are too wide for buttons, resize?')
     end
@@ -29,59 +56,60 @@ close all
     ypos = linspace(startY, heightFig - sideButton(2) - startY, 3);
     iLoop = 0;
     [options] = MCI_options;
+    buttonLabel = {'','','','', sprintf('Start block %i of %i', currentBlock, nBlocks), '','', '',''};
+    responsesLabels = {};
     for xButton = 1 : length(xpos)
         for yButton = 1 : length(ypos)
             iLoop = iLoop + 1;
             imgfiles = dir([options.locationImages '*_MCI' num2str(iLoop) '.jpg']);
-            tmp = imread([options.locationImages imgfiles(1).name]);
-            a = tmp;
-            a(:, :, 2) = tmp;
-            a(:, :, 3) = tmp;
+            responsesLabels{iLoop} = imgfiles(1).name(1 : strfind(imgfiles(1).name, '_')-1);
+%             tmp = imread([options.locationImages imgfiles(1).name]);
+%             a = tmp;
+            % this cannot be used because the images do not have all the
+            % same size
+%             a(:, :, 2, iLoop) = tmp;
+%             a(:, :, 3, iLoop) = tmp;
+%                 'CData', a, ....
+%                 'Tag', imgfiles(1).name(1 : strfind(imgfiles(1).name, '_')-1), ...
+%                 'FontSize', 28, ...
+%                 'FontWeight', 'bold', ...
             hsurf(iLoop).b = uicontrol('Style','pushbutton', ...
-                'CData', a, ...
-                'Tag', imgfiles(1).name(1 : strfind(imgfiles(1).name, '_')-1), ...
+                'String', buttonLabel{iLoop}, ...
                 'Position',[xpos(xButton) ypos(yButton), ...
                 sideButton(1), sideButton(2)], ... 
                 'BackgroundColor', 'white', ...
             'Callback', @processKeyButtons);
+ 
         end
     end
 
-%% set up experiment
-    dir2save = '';
-    dir2save = '~/Results/MCI/';
-    % check if part of the experiment has been performed already
-    runBefore = dir([dir2save phase '_MCI_' participant.name '.mat']);
-    istim = 1;
-    if isempty(runBefore)
-        [stimuli, nBlocks] = MCI_makeStimuli(phase);
-    else
-%         load([runBefore.folder '/' runBefore.name]);
-        load([dir2save runBefore.name]);
-        nBlocks = floor(sum([stimuli.done] == 1) / 27); % 27 = nContours * nRepetitions;
-        istim = find([stimuli.done] == 0, 1);
-        if isempty(istim)
-            fprintf('MCI %s phase COMPLETED\n', phase);
-            clear all
-            close all
-            return;
-        end
-    end
-    nTrialsPerBlock = length(stimuli) / nBlocks;
 
     nStim = length(stimuli);
 %     stimuli = stimuli(randperm(nStim));
-    if ~ strcmp(participant.name, 'test')
-        h = warndlg('Pressing START will begin the task','READY TO GO?', 'modal');
-        uiwait(h);
+%     if ~ strcmp(participant.name, 'test')
+%         h = warndlg('Pressing START will begin the task','READY TO GO?', 'modal');
+%         uiwait(h);
+%     end
+    if strcmp(participant.name, 'test')
+       playMCI 
     end
     
     f.Visible = 'on';
-    pause(1);
+    pause(.5);
     blocksCompleted = 0;
     
-    playMCI
-    
+    function giveFeedback(responseGiven)
+%         correctAns = strcmp(responsesLabels, stimuli(istim).mciProfile);
+%         actualAnswer = strcmp(responsesLabels, responseGiven);
+        hsurf(strcmp(responsesLabels, responseGiven)).b.BackgroundColor = 'red';
+        pause(1)
+        hsurf(strcmp(responsesLabels, stimuli(istim).mciProfile)).b.BackgroundColor = 'green';
+        pause(1)
+        hsurf(strcmp(responsesLabels, stimuli(istim).mciProfile)).b.BackgroundColor = 'white';
+        hsurf(strcmp(responsesLabels, responseGiven)).b.BackgroundColor = 'white';
+        pause(.5)
+    end
+
     function playMCI
         if istim > nStim
             fprintf('MCI %s phase COMPLETED\n', phase);
@@ -107,8 +135,7 @@ close all
     end
 
     function processKeyButtons(source, ~)
-%         val = source.Value;
-%         maps = source.String;
+        
         if isempty(source.String)
             fprintf('trNum %i | stim = %s -- resp = %s\n', istim, ...
                 stimuli(istim).mciProfile, source.Tag);
@@ -118,25 +145,61 @@ close all
                 stimuli(istim).acc = 1;
             end
             save([dir2save phase, '_MCI_' participant.name '.mat'], 'stimuli');
+            
+            if ~ stimuli(istim).acc 
+                giveFeedback(source.Tag)
+            end
             pause(.25);
             % %% break
             if mod(istim, nTrialsPerBlock) == 0
                 blocksCompleted = blocksCompleted + 1;
-                htmp = warndlg(...
-                    sprintf('Please take a break/n/nPressing START to continue with the task', 'modal'),...
-                    sprintf('%i of %i blocks completed', blocksCompleted, nBlocks));
-                uiwait(htmp);
-            end
-            istim = istim + 1; % do next trial
-            playMCI
+                iLoop = 0;
+                buttonLabel = {'','','','', sprintf('Start block %i of %i',...
+                    blocksCompleted, nBlocks), '','', '',''};
+                for xButton = 1 : length(xpos)
+                    for yButton = 1 : length(ypos)
+                        iLoop = iLoop + 1;
+                        hsurf(iLoop).b.CData = [];
+                        hsurf(iLoop).b.String = buttonLabel{iLoop};
+                    end
+                end
+%                 uiwait(htmp);
+            else
+                % do next trial
+                istim = istim + 1; 
+                playMCI
+            end % else just wait for the next button press
         else
-            switch source.String
-                case 'Start'
-                    disp('Start')
-                case 'Finished'
-                    disp('Finished')
-                otherwise 
-                    disp('This buttonpress option is not implemented')
+%             switch source.String
+            if strfind(source.String, 'Start')
+%                 case {'START', 'BREAK'}
+                % put images on the buttons
+                iLoop = 0;
+                for xButton = 1 : length(xpos)
+                    for yButton = 1 : length(ypos)
+                        iLoop = iLoop + 1;
+                        imgfiles = dir([options.locationImages '*_MCI' num2str(iLoop) '.jpg']);
+                        tmp = imread([options.locationImages imgfiles(1).name]);
+                        a = tmp;
+                        a(:, :, 2) = tmp;
+                        a(:, :, 3) = tmp;
+                        hsurf(iLoop).b = uicontrol('Style','pushbutton', ...
+                            'String', [], ...
+                            'Tag', imgfiles(1).name(1 : strfind(imgfiles(1).name, '_')-1), ...
+                            'Position',[xpos(xButton) ypos(yButton), ...
+                            sideButton(1), sideButton(2)], ...
+                            'CData', a, ....
+                            'BackgroundColor', 'white', ...
+                            'Callback', @processKeyButtons);
+                    end
+                end
+                pause(.5);
+                istim = istim + 1;
+                playMCI
+%                 case 'Finished'
+%                     disp('Finished')
+%                 otherwise 
+%                     disp('This buttonpress option is not implemented')
             end
         end   
         uiresume(gcbf)
