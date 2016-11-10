@@ -44,7 +44,7 @@ function [G, bkg, bigFish, bubbles, gameCommands, hourglass] = setUpGame(maxTurn
     % there must be as many sprites of the circles as many circles we want
     for iCircle = 1 : nFriends
         locFriendsArcOne(iCircle) =  SpriteKit.Sprite('circle');
-        locFriendsArcOne(iCircle).initState('circle', 'Images/circle.png', true);
+        locFriendsArcOne(iCircle).initState('circle', [options.locationImages 'circle.png'], true);
         locFriendsArcOne(iCircle).Location = bigFish.arcAround1(:,iCircle)';
         locFriendsArcOne(iCircle).Scale = targetScale; % this is to make sure that the circle and the friends on the first arc have equal dimensions
     end

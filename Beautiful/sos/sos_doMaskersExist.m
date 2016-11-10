@@ -1,6 +1,7 @@
 function sos_doMaskersExist(options)
     countMissing = 0;
-    [~, options] = expe_build_conditions(options);
+%     [~, options] = expe_build_conditions(options);
+    [~, options] = sos_build_conditions(options);
     phases = {'training', 'test'};
     nPhases = length(phases);
     for phase = 1 : nPhases

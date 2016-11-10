@@ -42,7 +42,8 @@ end
 % expe_main(options, 'test');
 % maybe at a later stage, let's stick to Nawal's convention for now and
 % modify later
-% sos_main(options, 'training');
+sos_main(options, 'training');
+
 sos_main(options, 'test');
 % should we enquire about starting session 2?
 % expe_main(options, 2);

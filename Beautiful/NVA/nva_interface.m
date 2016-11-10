@@ -31,12 +31,13 @@ function nva_interface(stimulus, options, participant, pathsToAdd)
         navLists(cellfun('isempty', strfind(navLists, 'list_'))) = [];
         nLists = length(navLists);
         for nvaList = 1 : nLists
-            if length(responses.(navLists{nvaList}).word) == ...
+            nAttempt = length(responses.(navLists{nvaList}));
+            if length(responses.(navLists{nvaList})(nAttempt).word) == ...
                     length(stimulus.(navLists{nvaList}).words2Display)
                 iList = iList + 1;
                 iStim = iStim + 12;
             else
-                iStim = iStim + length(responses.(navLists{nvaList}).word) - 1;
+                iStim = iStim + length(responses.(navLists{nvaList})(nAttempt).word) - 1;
             end
         end
     end

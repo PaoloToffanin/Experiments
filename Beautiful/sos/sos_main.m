@@ -38,9 +38,9 @@ function sos_main(options, phase)
         training = expe.training;
         
         %1. Train on target WITHOUT masker:
-        %                 tic
-        %                 phase = 'training1';
-        %                 playTrain(h, options,training,phase,training.feedback,sentences);
+        tic
+        phase = 'training1';
+        playTrain(h, options,training,phase,training.feedback,sentences);
         
         %2. Train on target WITH masker. Give feedback.
         phase = 'training2';

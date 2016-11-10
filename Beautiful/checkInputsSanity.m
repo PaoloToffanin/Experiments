@@ -16,9 +16,12 @@ function participant = checkInputsSanity(participant, options)
     completedExps = [];
 %     for iExp = 1 : length(unique(participant.expName))
     for iExp = 1 : length(unique(participant.expDir))
+%         file = dir([options.home '/Results/' upper(participant.expDir{iExp}(1)) ...
+%             participant.expDir{iExp}(2:end), '/*' ...
+%             participant.name '*.mat']);
         file = dir([options.home '/Results/' upper(participant.expDir{iExp}(1)) ...
             participant.expDir{iExp}(2:end), '/*' ...
-            participant.name '*.mat']);
+            participant.name '.mat']);
         % if the file does not exists no need to check where we got with it
         if ~isempty(file)
             % check if all conditions have been performed, not only if the file
@@ -29,6 +32,11 @@ function participant = checkInputsSanity(participant, options)
                 file = file(cellfun('isempty', strfind({file.name}, 'training')));
             end
 %            tmp = load([file.folder '/' file.name]);
+            % this is to fix the test run
+%             if length(file) > 1
+%                 fprintf('%i response files found\n', length(file)); 
+%                 file(cellfun('isempty', strfind({file.name}, 'test.mat'))) = [];
+%             end
             tmp = load([options.home '/Results/', ...
                 upper(participant.expDir{iExp}(1)) participant.expDir{iExp}(2:end), '/' ...
                 file.name]);
@@ -41,7 +49,9 @@ function participant = checkInputsSanity(participant, options)
                     nLists = length(navLists);
                     countFinished = 0;
                     for list = 1 : nLists
-                        if length(tmp.responses.(navLists{list}).word) == 12
+                        % find last attempt:
+                        nAttempt = length(tmp.responses.(navLists{list}));
+                        if length(tmp.responses.(navLists{list})(nAttempt).word) == 12
 % 12 is the number of word tested per list
 %                                length(tmp.responses.(navLists{list}).timeFromStart)
                             countFinished = countFinished + 1;

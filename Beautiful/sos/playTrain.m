@@ -27,6 +27,7 @@ function failed = playTrain(h, options,condition,phase,feedback,sentences)
 
         %Generate Masker and target:
         [target, masker, sentence, fs] = expe_make_stim(options, condition, phase, i);
+%         [target, masker, sentence, fs] = sos_make_stim(options, condition, phase, i);
         if isempty(masker) || isempty(target)
             disp('target or masker are empty')
             failed = true;

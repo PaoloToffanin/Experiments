@@ -1,5 +1,6 @@
 
-participant.name = 'EDLIxx';
+% participant.name = 'EDLIx4';
+participant.name = 'test';
 participant.age = 5;
 participant.sex = 'f';
 participant.language = 'Dutch'; % or English

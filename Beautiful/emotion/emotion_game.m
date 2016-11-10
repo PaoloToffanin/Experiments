@@ -19,7 +19,9 @@ function [G, Clown, Buttonup, Buttondown, gameCommands, Confetti, Parrot, ...
     G = SpriteKit.Game.instance('Title','Emotion Game', 'Size', screen2(3:4), 'Location', screen2(1:2), 'ShowFPS', false);
     
     options = emotion_options;
+    addpath('../lib/MatlabCommonTools/');
     SpriteKit.Background(resizeBackgroundToScreenSize(screen2, [options.locationImages 'circusbackground_unscaled.png']));
+    rmpath('../lib/MatlabCommonTools/');
     addBorders(G);
 %     bkg.Depth = -1;
     

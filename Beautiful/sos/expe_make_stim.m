@@ -77,7 +77,8 @@ function [masker,target,fs,masker_struct] = createMasker(options,trial,phase,tar
         ser = options.(phase).voices(trial.dir_voice).ser;
 % N:         filename = make_fname([num2str(i) '.wav'], f0, ser, options.tmp_path);
 %         filename = make_fname([options.maskerSex num2str(i) '.wav'], f0, ser, options.tmp_path);
-        filename = [options.tmp_path 'M_' options.maskerSex num2str(i) ...
+% P:        options.maskerSex{2}; during training masker is man
+        filename = [options.tmp_path 'M_' options.maskerSex{2} num2str(i) ...
             sprintf('_GPR%.2f_SER%.2f', f0, ser) '.wav'];
         % load file if it exists
         if exist(filename,'file')

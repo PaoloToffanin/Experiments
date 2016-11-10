@@ -1,8 +1,8 @@
 function varargout = MCI_GUI(varargin)
 close all
     
-    phase = 'training';
-%     phase = 'test';
+%     phase = 'training';
+    phase = 'test';
     participant.name = 'paolo';
 %     participant.name = 'test';
     if nargin > 1
@@ -151,7 +151,7 @@ close all
             end
             save([dir2save phase, '_MCI_' participant.name '.mat'], 'stimuli');
             
-            if ~ stimuli(istim).acc 
+            if strcmp(phase, 'training') && ~ stimuli(istim).acc 
                 giveFeedback(source.Tag)
             end
             pause(.25);
