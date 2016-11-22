@@ -7,7 +7,7 @@ function varargout = MCI_GUI(varargin)
 %     participant.name = 'test';
     if nargin > 1
         phase = varargin{1};
-        participant = varargin{2};
+        participant.name = varargin{2};
     end
 
     fprintf('MCI %s phase \n', phase);
