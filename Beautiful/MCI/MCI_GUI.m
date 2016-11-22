@@ -1,5 +1,5 @@
 function varargout = MCI_GUI(varargin)
-close all
+% close all
     
 %     phase = 'training';
     phase = 'test';
@@ -120,6 +120,7 @@ close all
             fprintf('MCI %s phase COMPLETED\n', phase);
             clear all
             close all
+            varargout = {1};
             return;
         end
         [notes2play, fs] = MCI_makeContour(stimuli(istim));
@@ -211,5 +212,8 @@ close all
 
     end
     
-    
+    varargout = {0};
+    if istim == nStim
+        varargout = {1};
+    end
 end

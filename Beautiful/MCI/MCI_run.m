@@ -1,8 +1,10 @@
+function MCI_run
 
-rng('shuffle')
-run('../defineParticipantDetails.m')
+    rng('shuffle')
+    run('../defineParticipantDetails.m')
 
-MCI_GUI('training', participant);
-
-MCI_GUI('test', participant);
-
+    phases = {'training', 'test'};
+    for iphase = 1 : 2
+        MCI_GUI(phases{iphase}, participant);
+    end
+end
