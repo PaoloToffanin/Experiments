@@ -2,10 +2,8 @@ function testRunner_GUI(participant)
 %% features to add
 % make it impossible for participants to run tasks without following the
 % order of presentation that the experimenter chooses.
-% 1 - shading of buttons resambling the order of the task to choose (enable 
-% disable buttons?) OR:
-% 2 - substituting taskname with task1, task2, so that participants can be
-% independent but are not choosing a random order themselves
+% 1 - add GUI window to add comments at the end of the experiments
+
 
     %% note paol8 added a clear all on participantDetails, so that the
     % participant structure is renewed every time, might have undesired

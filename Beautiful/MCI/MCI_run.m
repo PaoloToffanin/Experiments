@@ -1,10 +1,9 @@
 function MCI_run
 
-    rng('shuffle')
-    run('../defineParticipantDetails.m')
-
-    phases = {'training', 'test'};
-    for iphase = 1 : 2
-        MCI_GUI(phases{iphase}, participant);
-    end
+%     rng('shuffle')
+%     run('../defineParticipantDetails.m')
+%     % to run from the console call line 3 and 4 to initiliaze the variable
+%     % participant and then call the line below (testing will follow automatically)
+%     MCI_GUI('training', participant)
+    MCI_GUI
 end
