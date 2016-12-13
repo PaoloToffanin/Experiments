@@ -11,6 +11,8 @@ function MCI_GUI % will become MCI_run
 %         participant = varargin{2};
 %     end
     
+    disp(pwd)
+
     rng('shuffle')
     run('../defineParticipantDetails.m')
 
@@ -112,6 +114,19 @@ function MCI_GUI % will become MCI_run
     f.Visible = 'on';
     pause(.5);
     blocksCompleted = 0;
+    continueExp = true;
+    while continueExp
+        if continueExp == false
+            fprintf('Ciao Ciao \n');
+            return
+        end
+        if strcmp(participant.name, 'test')
+            keysCallback
+        else
+            uiwait;
+        end
+    end % while loop all trials
+  
     
     function giveFeedback(responseGiven)
 %         correctAns = strcmp(responsesLabels, stimuli(istim).mciProfile);
@@ -144,6 +159,7 @@ function MCI_GUI % will become MCI_run
             hsurf(5).b.Enable = 'on';
             save([dir2save 'MCI_' participant.name '.mat'], 'stimuli');
             pause(2)
+            continueExp = false;
             return
         end
         if istim > 1 & ~strcmp(stimuli(istim).phase, stimuli(istim-1).phase)
@@ -162,6 +178,7 @@ function MCI_GUI % will become MCI_run
 %             hsurf(5).b.Enable = 'on';
 %         else  % if istim > 1 & ~strcmp(stimuli(istim).phase, stimuli(istim-1).phase)
         end
+%         disp(pwd)
             [notes2play, fs] = MCI_makeContour(stimuli(istim));
             p = audioplayer(notes2play, fs);
             playblocking(p)
@@ -178,6 +195,7 @@ function MCI_GUI % will become MCI_run
                     stimuli(istim).mciProfile, stimuli(istim).response);
                 stimuli(istim).acc = randi([0, 1]);
                 stimuli(istim).done = 1;
+                stimuli(istim).time = datetime('now', 'InputFormat', 'dd-mmm-yyyy HH:mm:ssss'); % extract as: i.e. stimuli(istim).time.Second
                 save([dir2save 'MCI_' participant.name '.mat'], 'stimuli');
                 playMCI
             end
@@ -186,7 +204,7 @@ function MCI_GUI % will become MCI_run
 
     function processKeyButtons(source, ~)
         if isempty(source.String)
-            disp(istim)
+%             disp(istim)
             % disable response buttons
             nButtons = length(hsurf);
             for iButton = 1 : nButtons
