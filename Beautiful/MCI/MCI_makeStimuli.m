@@ -72,7 +72,7 @@ function [stimuli, nBlocks] = MCI_makeStimuli
         
         masker = [57, 81]; % this is always flat and it is alwasy the piano.
         
-        % randomize order
+%% randomize order
         %     stimuli = stimuli(randperm(length(stimuli)));
         % this is not necessary now...
         % training or test?
@@ -87,7 +87,7 @@ function [stimuli, nBlocks] = MCI_makeStimuli
                 trainingSet = trainingSet(randperm(length(trainingSet)));
                 trainingSet2 = [];
                 maskerStartsAt = nInstruments * nSemitonesSteps * nRepetitions * nContours; % #instruments, #semitones, #reps, #contours, #starts at level 81
-                for isemi = 1:3
+                for isemi = 1 : nSemitonesSteps
                     trainingSet2 = [trainingSet2,  maskerStartsAt + [1:nContours] + nContours*nSemitonesSteps * (isemi - 1)];
                 end
                 trainingSet2 = trainingSet2(randperm(length(trainingSet2)));
@@ -96,7 +96,8 @@ function [stimuli, nBlocks] = MCI_makeStimuli
                 nBlocks = 2; % for now the nBlocks for the training phase is
                 % hardcoded to be 54/2 (27 also in the test session). 
                 [stimuli.phase] = deal(phases{phase});
-                tmp = stimuli;
+%                 tmp = stimuli;
+                trainingStimuli = stimuli;
             case 'test'
                 % randomize every 27 trials so that we keep blocks of contours
                 % per repetition
@@ -105,11 +106,13 @@ function [stimuli, nBlocks] = MCI_makeStimuli
                         stimuli(randperm(nTrialsPerBlock) + nTrialsPerBlock * (iblocks - 1));
                 end
                 [stimuli.phase] = deal(phases{phase});
-                tmp(end+1 : end + length(stimuli)) = stimuli;
+%                 tmp(end+1 : end + length(stimuli)) = stimuli;
+                testStimuli = stimuli;
             otherwise
                 error('Error. \nUnknown phase option %s', phases{phase})
-                
         end % switch phase
     end % for loop phases
-    stimuli = tmp;
+%     stimuli = tmp;
+    stimuli = [trainingStimuli, testStimuli];
+    
 end % end function

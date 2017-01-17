@@ -1,26 +1,8 @@
-function MCI_GUI % will become MCI_run
-% function MCI_run 
-% close all
-
-% %     phase = 'training';
-% %     phase = 'test';
-%     participant.name = 'paolo';
-    participant.name = 'test';
-%     if nargin > 1
-%         phase = varargin{1};
-%         participant = varargin{2};
-%     end
-    
-    disp(pwd)
-
-    rng('shuffle')
-    run('../defineParticipantDetails.m')
-
+function MCI_GUI(participant)
 %% set up experiment
     dir2save = '';
     dir2save = '~/Results/MCI/';
     % check if part of the experiment has been performed already
-%     runBefore = dir([dir2save phase '_MCI_' participant.name '.mat']);
     runBefore = dir([dir2save 'MCI_' participant.name '.mat']);
     istim = 0;
     phases = {'training', 'test'};
@@ -60,7 +42,7 @@ function MCI_GUI % will become MCI_run
     disp(nBlocks)
     fprintf('MCI %s phase \n', phases{iphase});
     
-    %  Create and then hide the GUI as it is being constructed.
+%%  Create and then hide the GUI as it is being constructed.
     widthFig = 1280;
     heightFig = 1024;
     sideButton = [364 304]; % adjusted to leave room for the feedback
@@ -104,7 +86,7 @@ function MCI_GUI % will become MCI_run
         end
     end
 
-
+%% user interaction
 %     nStim = length(stimuli(strcmp({stimuli.phase}, phases{iphase})));
     nStim = length(stimuli);
     if strcmp(participant.name, 'test')
@@ -273,4 +255,5 @@ function MCI_GUI % will become MCI_run
         end
     end
 
-end
+end % function MCI_GUI
+

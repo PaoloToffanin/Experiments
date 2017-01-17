@@ -75,12 +75,14 @@ function participant = checkInputsSanity(participant, options)
                     end
                 case 'emotion'
                     % we care only of test, training they can redo
-                    switch length(fields(tmp.results.test))
-                        case 2
-                            completedExps = [completedExps  ...
-                                find(strcmp(participant.expDir, participant.expDir{iExp}))];
-                        case 1
-                            completedExps = [completedExps iExp];
+                    if isfield(tmp.results, 'test')
+                        switch length(fields(tmp.results.test))
+                            case 2
+                                completedExps = [completedExps  ...
+                                    find(strcmp(participant.expDir, participant.expDir{iExp}))];
+                            case 1
+                                completedExps = [completedExps iExp];
+                        end
                     end
                 case 'gender'
                     if (isfield(tmp, 'results') && ...
