@@ -179,7 +179,7 @@ expe.test = testing;
 %--
                 
 if isfield(options, 'res_filename')
-    save(options.res_filename, 'options', 'expe');
+    save([options.result_path options.res_filename], 'options', 'expe');
 else
     warning('The test file was not saved: no filename provided.');
 end

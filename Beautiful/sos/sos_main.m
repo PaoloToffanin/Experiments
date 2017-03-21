@@ -4,7 +4,7 @@ function sos_main(options, phase)
     %Init GUIs
     %Experiment is defined here!
 
-    load(options.res_filename); % options, expe, results
+    load([options.result_path options.res_filename]); % options, expe, results
     
 
 %Provide starting instructions
@@ -61,10 +61,11 @@ function sos_main(options, phase)
             % Find first condition not done
             % N:        iTrial = find([expe.test.conditions.done]==0 & [expe.test.conditions.session] == session, 1);
             iTrial = find([expe.test.conditions.done] == 0, 1);
+%             iTrial = find([expe.(phase).conditions.done] == 0, 1);
             fprintf('\n=========== trial %s %d of %d ==========\n', ...
-                expe.(phase).conditions.maskerVoice, iTrial, total_trials);
+                expe.(phase).conditions(iTrial).maskerVoice, iTrial, total_trials);
             condition = expe.test.conditions(iTrial);
-            
+%             condition = expe.(phase).conditions(iTrial);
             %Print the condition to the screen:
             disp(condition);
             

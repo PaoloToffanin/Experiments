@@ -274,7 +274,8 @@ function h = initExpGUI(expe,options)
 % ridiculously high! Can't we just downsample to 22050 and 16 bits, it's
 % only for rescoring/double checking the repetitions
 %         h.recObj = audiorecorder(22050,16,1,0); 
-        h.recObj = audiorecorder(22050,16,1); % Device Error: Invalid sample rate
+%         h.recObj = audiorecorder(22050,16,1); % Device Error: Invalid sample rate
+        h.recObj = audiorecorder(44100,16,1); % Device Error: Invalid sample rate
         disp('Recording...')
         record(h.recObj);
        % play(h.recObj);
