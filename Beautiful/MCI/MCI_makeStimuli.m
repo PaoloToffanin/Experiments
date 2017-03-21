@@ -1,4 +1,4 @@
-function [stimuli, nBlocks] = MCI_makeStimuli
+function [stimuli, nBlocks, nTrialsPerBlock] = MCI_makeStimuli
 % function [stimuli, nBlocks] = MCI_makeStimuli(phase)
 
 % since there are repetitions of the same stimuli we actually do not need
@@ -17,7 +17,7 @@ function [stimuli, nBlocks] = MCI_makeStimuli
         % organ first because it's easier
         instruments = {'O', 'P'};
         nInstruments = length(instruments);
-        nRepetitions = 3;
+        nRepetitions = 1;
         counter = 1;
         maskerStart = [0, 81, 57]; % masker starting at different semitone is
         % easier to distingush than masker starting at same semitone
@@ -76,7 +76,9 @@ function [stimuli, nBlocks] = MCI_makeStimuli
         %     stimuli = stimuli(randperm(length(stimuli)));
         % this is not necessary now...
         % training or test?
-        nTrialsPerBlock = nContours * nRepetitions;
+%         nTrialsPerBlock = nContours * nRepetitions;
+        nTrialsPerBlock = nContours * nSemitonesSteps;
+%         disp(nTrialsPerBlock);
         nBlocks(phase) = length(stimuli) / nTrialsPerBlock;
         switch phases{phase}
             case 'training'

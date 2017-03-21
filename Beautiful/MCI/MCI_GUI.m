@@ -8,7 +8,7 @@ function MCI_GUI(participant)
     phases = {'training', 'test'};
     iphase = 1;
     if isempty(runBefore)
-        [stimuli, nBlocks] = MCI_makeStimuli;
+        [stimuli, nBlocks, trialsPerBlock] = MCI_makeStimuli;
         currentBlock = 1;
     else
 %         load([runBefore.folder '/' runBefore.name]); % not available in
@@ -33,13 +33,15 @@ function MCI_GUI(participant)
             fprintf('Experiment completed\n')
             return
         end
-        nBlocks(iphase) = round(length(stimuli(strcmp({stimuli.phase}, phases{iphase}))) / 27);
-        currentBlock = ceil(sum([stimuli(strcmp({stimuli.phase}, phases{iphase})).done] == 1) / 27); % 27 = nContours * nRepetitions;
+        trialsPerBlock = 27;
+        nBlocks(iphase) = round(length(stimuli(strcmp({stimuli.phase}, phases{iphase}))) / trialsPerBlock);
+        currentBlock = ceil(sum([stimuli(strcmp({stimuli.phase}, phases{iphase})).done] == 1) / trialsPerBlock); % 27 = nContours * nRepetitions;
 %         istim = find([stimuli(strcmp({stimuli.phase}, phases{iphase})).done] == 0, 1);
         
     end
     nTrialsPerBlock = length(stimuli(strcmp({stimuli.phase}, phases{iphase}))) / nBlocks(iphase);
-    disp(nBlocks)
+%     nTrialsPerBlock = 3;
+%     disp(nBlocks);
     fprintf('MCI %s phase \n', phases{iphase});
     
 %%  Create and then hide the GUI as it is being constructed.
@@ -209,6 +211,9 @@ function MCI_GUI(participant)
             if mod(istim, nTrialsPerBlock) == 0
                 blocksCompleted = blocksCompleted + 1;
                 iLoop = 0;
+                % +1 because we want to go to the next block
+                currentBlock = (ceil(sum([stimuli(strcmp({stimuli.phase}, ...
+                    phases{iphase})).done] == 1) / nTrialsPerBlock)) + 1; 
                 buttonLabel = {'','','','', sprintf('Start block %i of %i blocks (%s)', ...
                     currentBlock, nBlocks(iphase), stimuli(istim).phase), '','', '',''};
                 for xButton = 1 : length(xpos)
