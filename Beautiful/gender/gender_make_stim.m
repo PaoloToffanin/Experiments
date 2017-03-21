@@ -123,8 +123,13 @@ function [y, fs] = straight_process(word, nb_st, vtl, d, options)
             warning('Output was renormalized for "%s".', wavOut);
             y = 0.98*y/max(abs(y));
         end
-        
-        y = remove_silence(y, fs);
+        % PT: remove_silence gives often problems. With Jacquelien it was
+        % getting to play only silence, with Christina it seems to trim all
+        % the sound away. Be ware that if sound is not played this might be
+        % the source
+        disp(['remove_silence was not used, if you do not hear any sounds', ...
+            ' this might be the cause'])
+%         y = remove_silence(y, fs);
         
         audiowrite(wavOut, y, fs);
 
