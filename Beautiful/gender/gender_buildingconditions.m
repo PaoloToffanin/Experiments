@@ -24,6 +24,9 @@ function [expe, options] = gender_buildingconditions(options)
     else
         options.test.f0s = [0 -6 -12]; % kids version
         options.test.vtls = [0 1.8 3.6]; % kids version
+        disp('Vtl and f0 options of Christina')
+        options.test.f0s = [0, -3, -6, -9, -12]; 
+        options.test.vtls = [0.0, 0.7, 1.6, 2.4 3.0, 3.6];
     end
     nF0 = length(options.test.f0s);
     
