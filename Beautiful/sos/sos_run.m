@@ -15,7 +15,7 @@ rng('shuffle')
 run('../defineParticipantDetails.m')
 
 
-options = sos_stimuliOptions;
+options = sos_stimuliOptions(participant);
 options = sos_defineDirectories(options, participant);
 options = sos_instructions(options, participant.language);
 if ~isfield(options, 'instructions')

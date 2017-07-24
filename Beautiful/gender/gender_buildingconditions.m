@@ -19,8 +19,8 @@ function [expe, options] = gender_buildingconditions(options)
 
     % -------- Stimuli options
     if options.Bert
-        options.test.f0s = [0 -3 -6 -9 -12]; % adults version
-        options.test.vtls = [0 .7 1.6 2.4 3 3.6]; % adults version
+        options.test.f0s = [0 -6 -12]; % adults version
+        options.test.vtls = [0 1.8 3.6]; % adults version
     else
         options.test.f0s = [0 -6 -12]; % kids version
         options.test.vtls = [0 1.8 3.6]; % kids version

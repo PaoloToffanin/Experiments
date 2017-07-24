@@ -14,15 +14,15 @@ options.fs = 44100;
 
 %     options.attenuation_dB = 3;  % General attenuation
     options.attenuation_dB = 17; % General attenuation
-if options.Bert
-    options.attenuation_dB = 3; 
-end
+% if options.Bert
+%     options.attenuation_dB = 3; 
+% end
 
 options.ear = 'both'; % right, left or both
 
-if options.Bert
-    options.ear = 'left'; 
-end
+% if options.Bert
+%     options.ear = 'left'; 
+% end
 
 %----------- Design specification
 options.test.n_repeat = 1; % Number of repetition per condition

@@ -90,6 +90,10 @@ options.vocoder = 0;
 
 %--- Define Target-to-Masker Ratio in dB:
 options.TMR = [0 5 10]; %testing at 8dB
+if options.forBert
+    options.TMR = 10;
+end
+
 %This protocol was adopted from Mike and Nikki's Musician effect on SOS
 %performance; TMR values taken from Pals et al. 2015, and Stickney et al.
 %2004
@@ -134,8 +138,10 @@ rand_testList = datasample(testList,length(testList), 'Replace', false);
 % P: NOTE!! 'test' is the name of a matlab function. do not use test for
 % naming structures!
 itrial = 1;
-nTMRs = length(options.TMR);
+
+% options.test.TMR = 10; %testing at 8dB
 nMaskerVoices = length(options.maskerSex);
+nTMRs = length(options.TMR);
 for iMasker = 1 : nMaskerVoices
     for iTMR = 1 : nTMRs
         for i_vp = rnd_voice_pairs
@@ -174,6 +180,10 @@ end
 
 %Randomize all:
 % testing.conditions = testing.conditions(randperm(length(testing.conditions)));
+% note on randomization:
+% Christina decided not to randomize to present the masker of
+% same/different genders blocked. Masker of a different sex should be
+% easier to isolate/filter out than a masker of a same sex.
 % append testing to the expe structure and save
 expe.test = testing;
 %--

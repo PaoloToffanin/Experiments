@@ -1,4 +1,4 @@
-function options = sos_stimuliOptions
+function options = sos_stimuliOptions(participant)
 % EXPE_OPTIONS([OPTIONS])
 %   Defines general options for the experiment, for instance:
 %   - where the results are saved
@@ -23,4 +23,7 @@ options.maskerSex = {'Vrouw', 'Man'}; %
 options.maskerSex = options.maskerSex(randperm(length(options.maskerSex)));
 
 % options.maskerSex = 'Man'; %  
-
+options.forBert = false;
+if participant.forBert
+    options.forBert = true;
+end
