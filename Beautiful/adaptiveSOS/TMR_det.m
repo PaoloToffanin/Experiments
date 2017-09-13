@@ -1,3 +1,7 @@
+% todo:
+% target has silence 500 ms before and after
+% masker: concatenate masker sentences until the length is the same of the target
+% put in the nva interface but with sentences instead of words
 
 locationVU = '/Users/elifkaplan/Desktop/Experiments/Sentences/spraak/';
 load ([locationVU 'VU_zinnen.mat']);
